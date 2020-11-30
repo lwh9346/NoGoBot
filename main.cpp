@@ -164,7 +164,7 @@ public:
     int n;     //访问次数
     int depth; //节点深度
     double score;
-    treeNode(int parentBoard[9][9], int action[2], int d,treeNode *p)
+    treeNode(int parentBoard[9][9], int action[2], int d, treeNode *p)
     {
         for (int i = 0; i < 9; i++)
         {
@@ -189,8 +189,8 @@ public:
         }
         if (childrenCountMax > childrenCount)
         {
-            treeNode *c=new treeNode(board, childrenAction[childrenCount], depth + 1,this);
-            children[childrenCount]=c;
+            treeNode *c = new treeNode(board, childrenAction[childrenCount], depth + 1, this);
+            children[childrenCount] = c;
             childrenCount++;
             return c;
         }
@@ -225,15 +225,15 @@ public:
             if (round % 2 == 0)
             {
                 int a = defaultPolicy(simulationBoard);
-                simulationBoard[a/9][a%9] = 1;
-                simulationBoardR[a/9][a%9] = -1;
+                simulationBoard[a / 9][a % 9] = 1;
+                simulationBoardR[a / 9][a % 9] = -1;
                 round++;
             }
             else
             {
                 int a = defaultPolicy(simulationBoardR);
-                simulationBoard[a/9][a%9] = -1;
-                simulationBoardR[a/9][a%9] = 1;
+                simulationBoard[a / 9][a % 9] = -1;
+                simulationBoardR[a / 9][a % 9] = 1;
                 round++;
             }
             r = result(simulationBoard);
@@ -285,23 +285,22 @@ private:
                     {
                         board[i][j] = 1;
                         boardR[i][j] = -1; //模拟一步
-                        int temp=getValidPositions(board,resultTemp)-getValidPositions(boardR,resultTemp);
+                        int temp = getValidPositions(board, resultTemp) - getValidPositions(boardR, resultTemp);
                         for (int k = 0; k < branchNum; k++)
                         {
-                            if (temp>max[k])
+                            if (temp > max[k])
                             {
-                                max[k]=temp;
-                                maxAction[k][0]=i;
-                                maxAction[k][1]=j;
+                                max[k] = temp;
+                                maxAction[k][0] = i;
+                                maxAction[k][1] = j;
                                 break;
                             }
-                            if (temp==max[k]&&rand()<5000)//六分之一的概率替换
+                            if (temp == max[k] && rand() < 5000) //六分之一的概率替换
                             {
-                                maxAction[k][0]=i;
-                                maxAction[k][1]=j;
+                                maxAction[k][0] = i;
+                                maxAction[k][1] = j;
                                 break;
                             }
-                            
                         }
                         board[i][j] = 0;
                         boardR[i][j] = 0; //还原
@@ -310,18 +309,20 @@ private:
             }
             for (int i = 0; i < branchNum; i++)
             {
-                childrenAction[i][0]=maxAction[i][0];
-                childrenAction[i][1]=maxAction[i][1];
+                childrenAction[i][0] = maxAction[i][0];
+                childrenAction[i][1] = maxAction[i][1];
             }
-        }else{
+        }
+        else
+        {
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
                     if (result[i][j])
                     {
-                        childrenAction[childrenCountMax][0]=i;
-                        childrenAction[childrenCountMax][1]=j;
+                        childrenAction[childrenCountMax][0] = i;
+                        childrenAction[childrenCountMax][1] = j;
                         childrenCountMax++;
                     }
                 }
@@ -333,7 +334,7 @@ private:
         //0棋局未结束
         //1棋局结束，当前方赢
         //-1棋局结束，当前方输
-        int result [9][9];
+        int result[9][9];
         int boardR[9][9]; //对方视角的棋盘
         for (int i = 0; i < 9; i++)
         {
@@ -342,14 +343,14 @@ private:
                 boardR[i][j] = -board[i][j];
             }
         }
-        int a,b;
-        a = getValidPositions(board,result);
-        b = getValidPositions(boardR,result);
-        if (a!=0&&b!=0)
+        int a, b;
+        a = getValidPositions(board, result);
+        b = getValidPositions(boardR, result);
+        if (a != 0 && b != 0)
         {
             return 0;
         }
-        if (a==0)
+        if (a == 0)
         {
             return -1;
         }
@@ -368,7 +369,7 @@ private:
                 boardR[i][j] = -board[i][j];
             }
         }
-        int validPositionCount=0;
+        int validPositionCount = 0;
         getValidPositions(board, result);
         int actions[81][2];
         for (int i = 0; i < 9; i++)
@@ -377,14 +378,14 @@ private:
             {
                 if (result[i][j])
                 {
-                    actions[validPositionCount][0]=i;
-                    actions[validPositionCount][1]=j;
+                    actions[validPositionCount][0] = i;
+                    actions[validPositionCount][1] = j;
                     validPositionCount++;
                 }
             }
         }
-        int i = rand()%validPositionCount;
-        return actions[i][0]*9+actions[i][1];
+        int i = rand() % validPositionCount;
+        return actions[i][0] * 9 + actions[i][1];
     }
 };
 
@@ -404,8 +405,8 @@ int main()
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
     };
     int action[2] = {2, 2};
-    treeNode root(board, action, 0,nullptr);
-    while (count<100 /*这里是停止搜索的条件*/)
+    treeNode root(board, action, 0, nullptr);
+    while (count < 100 /*这里是停止搜索的条件*/)
     {
         treeNode *node = root.treePolicy();
         int result = node->simulation();
@@ -422,5 +423,5 @@ int main()
             bestAction = root.childrenAction[i];
         }
     }
-    cout<<bestAction[0]<<" "<<bestAction[1]<<endl;
+    cout << bestAction[0] << " " << bestAction[1] << endl;
 }
