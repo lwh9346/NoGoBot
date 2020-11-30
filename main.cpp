@@ -227,12 +227,14 @@ public:
                 int a = defaultPolicy(simulationBoard);
                 simulationBoard[a/9][a%9] = 1;
                 simulationBoardR[a/9][a%9] = -1;
+                round++;
             }
             else
             {
                 int a = defaultPolicy(simulationBoardR);
                 simulationBoard[a/9][a%9] = -1;
                 simulationBoardR[a/9][a%9] = 1;
+                round++;
             }
             r = result(simulationBoard);
         }
@@ -366,31 +368,23 @@ private:
                 boardR[i][j] = -board[i][j];
             }
         }
-        int validPositionCount = getValidPositions(board, result);
-        int max = 1 << 31;
-        int maxAction[2];
+        int validPositionCount=0;
+        getValidPositions(board, result);
+        int actions[81][2];
         for (int i = 0; i < 9; i++)
         {
             for (int j = 0; j < 9; j++)
             {
                 if (result[i][j])
                 {
-                    board[i][j] = 1;
-                    boardR[i][j] = -1; //模拟一步
-                    int temp = getValidPositions(board, resultTemp) - getValidPositions(boardR, resultTemp);
-                        if (temp > max)
-                        {
-                            max = temp;
-                            maxAction[0] = i;
-                            maxAction[1] = j;
-                            break;
-                        }
-                    board[i][j] = 0;
-                    boardR[i][j] = 0; //还原
+                    actions[validPositionCount][0]=i;
+                    actions[validPositionCount][1]=j;
+                    validPositionCount++;
                 }
             }
         }
-        return maxAction[0]*9+maxAction[1];
+        int i = rand()%validPositionCount;
+        return actions[i][0]*9+actions[i][1];
     }
 };
 
@@ -399,8 +393,8 @@ int main()
     srand(233);
     int count = 0;
     int board[9][9] = {
-        {0, 1, 1, 0, 0, 0, 0, 0, 0},
-        {1, 1, 1, 1, 0, 0, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
