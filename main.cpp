@@ -6,6 +6,7 @@
 #include <string>
 #include <cstring>
 #define branchNum 4
+#define minInt -2147483648
 using namespace std;
 
 void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], char group[9][9], char groupGasState[81], char groupGasPosition[81][2], char positionState[9][9], char unicGasGroup[9][9])
@@ -33,12 +34,12 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             if (board[x][y] == 1)
             {
                 //己方
-                positionState[groupGasPosition[groupIndex][0]][groupGasPosition[groupIndex][1]] |= 4;
+                positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] |= 4;
             }
-            else if (unicGasGroup[groupGasPosition[groupIndex][0]][groupGasPosition[groupIndex][1]] == groupIndex) //如果是自己留下来的唯一气的话，现在就不是唯一气了，否则还是
+            else if (unicGasGroup[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] == groupIndex) //如果是自己留下来的唯一气的话，现在就不是唯一气了，否则还是
             {
                 //对方
-                positionState[groupGasPosition[groupIndex][0]][groupGasPosition[groupIndex][1]] &= ~1;
+                positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] = positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]]/2*2;
             }
             break;
         case 2:
@@ -136,13 +137,13 @@ int getValidPositions(int board[9][9], int result[9][9])
                 result[i][j] = 0;
                 continue;
             }
-            if (positionState[i][j] >> 2 == 1) //己方非唯一气，能下
+            if (positionState[i][j] / 4 == 1) //己方非唯一气，能下
             {
                 result[i][j] = 1;
                 r++;
                 continue;
             }
-            if (positionState[i][j] >> 1 % 2 == 1) //己方唯一气，不能下
+            if (positionState[i][j] / 2 % 2 == 1) //己方唯一气，不能下
             {
                 result[i][j] = 0;
                 continue;
@@ -279,7 +280,7 @@ private:
         if (validPositionCount > branchNum)
         {
             childrenCountMax = branchNum;
-            int max[branchNum] = {1 << 31, 1 << 31, 1 << 31, 1 << 31};
+            int max[branchNum] = {minInt, minInt, minInt, minInt};
             int maxAction[branchNum][2];
             for (int i = 0; i < 9; i++)
             {
@@ -364,15 +365,6 @@ private:
     {
         //返回落子坐标
         int result[9][9];
-        int resultTemp[9][9];
-        int boardR[9][9]; //对方视角的棋盘
-        for (int i = 0; i < 9; i++)
-        {
-            for (int j = 0; j < 9; j++)
-            {
-                boardR[i][j] = -board[i][j];
-            }
-        }
         int validPositionCount = 0;
         getValidPositions(board, result);
         int actions[81][2];
