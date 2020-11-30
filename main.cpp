@@ -121,7 +121,7 @@ private:
 
 void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], char group[9][9], char groupGasState[81], char groupGasPosition[81][2], char positionState[9][9], char unicGasGroup[9][9])
 {
-    if (group[i][j] == 0)
+    if (board[i][j] == 0)
     {
         switch (groupGasState[groupIndex])
         {
@@ -208,11 +208,19 @@ int getValidPositions(int board[9][9], int result[9][9])
 {
     int r = 0;
     int groupCount = 0;
-    char group[9][9] = {-1};            //保存各位置棋子的分组，-1表示未分组，数字表示分组的索引
+    char group[9][9];        //保存各位置棋子的分组，-1表示未分组，数字表示分组的索引
+    char unicGasGroup[9][9]; //如果是对方唯一气的话，存下是哪一组的唯一气
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            unicGasGroup[i][j] = -1;
+            group[i][j] = -1;
+        }
+    }
     char groupGasState[81] = {0};       //保存各分组的气的状态，分为0无气、1有单一气、2有多气
     char groupGasPosition[81][2] = {0}; //唯一气的位置
     char positionState[9][9] = {0};     //由低位开始，+1表示为对方唯一气，+2表示为己方唯一气，+4表示为己方非唯一气
-    char unicGasGroup[9][9] = {-1};     //如果是对方唯一气的话，存下是哪一组的唯一气
     for (int i = 0; i < 9; i++)
     {
         for (int j = 0; j < 9; j++)
@@ -229,23 +237,23 @@ int getValidPositions(int board[9][9], int result[9][9])
     {
         for (int j = 0; j < 9; j++)
         {
-            if (board[i][j] != 0)
+            if (board[i][j] != 0) //不是空格，不能下
             {
                 result[i][j] = 0;
                 continue;
             }
-            if (positionState[i][j] % 2 == 1) //对方唯一气，一定不能下
+            if (positionState[i][j] % 2 == 1) //对方唯一气，不能下
             {
                 result[i][j] = 0;
                 continue;
             }
-            if (positionState[i][j] >> 2 == 1) //己方非唯一气，一定能下
+            if (positionState[i][j] >> 2 == 1) //己方非唯一气，能下
             {
                 result[i][j] = 1;
                 r++;
                 continue;
             }
-            if (positionState[i][j] >> 1 % 2 == 0) //己方唯一气，不能下
+            if (positionState[i][j] >> 1 % 2 == 1) //己方唯一气，不能下
             {
                 result[i][j] = 0;
                 continue;
