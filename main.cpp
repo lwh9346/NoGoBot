@@ -1,12 +1,14 @@
 #include <math.h>
+#include <random>
+#define branchNum 4
 
 class treeNode
 {
 public:
     int board[9][9]; //棋盘,1为己方,-1为对方,0为空
     treeNode *parent;
-    treeNode *children[8];
-    int childrenAction[8][2];
+    treeNode *children[branchNum];
+    int childrenAction[branchNum][2];
     int childrenCount; //子节点个数
     int childrenCountMax;
     int q;     //回溯后获胜局数
@@ -106,6 +108,72 @@ private:
     void evaluate()
     {
         //填充childrenAction、countMax
+        int result[9][9];
+        int resultTemp[9][9];
+        int boardR[9][9]; //对方视角的棋盘
+        for (int i = 0; i < 9; i++)
+        {
+            for (int j = 0; j < 9; j++)
+            {
+                boardR[i][j] = -board[i][j];
+            }
+        }
+        int validPositionCount = getValidPositions(board, result);
+        if (validPositionCount > branchNum)
+        {
+            childrenCountMax = branchNum;
+            int max[branchNum] = {1 << 31, 1 << 31, 1 << 31, 1 << 31};
+            int maxAction[branchNum][2];
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (result[i][j])
+                    {
+                        board[i][j] = 1;
+                        boardR[i][j] = -1; //模拟一步
+                        int temp=getValidPositions(board,resultTemp)-getValidPositions(boardR,resultTemp);
+                        for (int k = 0; k < branchNum; k++)
+                        {
+                            if (temp>max[k])
+                            {
+                                max[k]=temp;
+                                maxAction[k][0]=i;
+                                maxAction[k][1]=j;
+                                break;
+                            }
+                            if (temp==max[k]&&rand()<5000)//六分之一的概率替换
+                            {
+                                maxAction[k][0]=i;
+                                maxAction[k][1]=j;
+                                break;
+                            }
+                            
+                        }
+                        board[i][j] = 0;
+                        boardR[i][j] = 0; //还原
+                    }
+                }
+            }
+            for (int i = 0; i < branchNum; i++)
+            {
+                childrenAction[i][0]=maxAction[i][0];
+                childrenAction[i][1]=maxAction[i][1];
+            }
+        }else{
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (result[i][j])
+                    {
+                        childrenAction[childrenCountMax][0]=i;
+                        childrenAction[childrenCountMax][1]=j;
+                        childrenCountMax++;
+                    }
+                }
+            }
+        }
     }
     int result(int board[9][9])
     {
