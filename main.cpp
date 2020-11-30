@@ -1,6 +1,10 @@
 #include <math.h>
 #include <random>
 #include <iostream>
+#include <ctime>
+#include "./jsoncpp/json.h"
+#include <string>
+#include <cstring>
 #define branchNum 4
 using namespace std;
 
@@ -391,30 +395,36 @@ private:
 
 int main()
 {
+    string str;
+	int x,y;
+	// 读入JSON
+	getline(cin,str);
+    int start = clock();
+	//getline(cin, str);
+	Json::Reader reader;
+	Json::Value input;
+	reader.parse(str, input); 
+    int board[9][9]={0};
+    int turnID = input["responses"].size();
+	for (int i = 0; i < turnID; i++) 
+	{
+		x=input["requests"][i]["x"].asInt(), y=input["requests"][i]["y"].asInt();
+		if (x!=-1) board[x][y]=-1;
+		x=input["responses"][i]["x"].asInt(), y=input["responses"][i]["y"].asInt();
+		if (x!=-1) board[x][y]=1;
+	}
+    x=input["requests"][turnID]["x"].asInt(), y=input["requests"][turnID]["y"].asInt();
+    int actionR[2] = {x, y};
     srand(233);
-    int count = 0;
-    int board[9][9] = {
-        {0, 1, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
-    int action[2] = {2, 2};
-    treeNode root(board, action, 0, nullptr);
-    while (count < 100 /*这里是停止搜索的条件*/)
+    treeNode root(board, actionR, 0, nullptr);
+    while (clock()-start < 950 /*这里是停止搜索的条件*/)
     {
         treeNode *node = root.treePolicy();
         int result = node->simulation();
         node->backup(result == 1 ? 1 : 0);
-        count++;
     }
     int max = 0;
-    int *bestAction = action;
+    int *bestAction = root.childrenAction[0];
     for (int i = 0; i < root.childrenCount; i++)
     {
         if (max < root.children[i]->n)
@@ -423,5 +433,10 @@ int main()
             bestAction = root.childrenAction[i];
         }
     }
-    cout << bestAction[0] << " " << bestAction[1] << endl;
+    Json::Value ret;
+	Json::Value action;
+    action["x"]=bestAction[0]; action["y"]=bestAction[1];
+	ret["response"] = action;
+	Json::FastWriter writer;
+    cout << writer.write(ret) << endl;
 }
