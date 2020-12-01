@@ -152,6 +152,10 @@ int getValidPositions(int board[9][9], int result[9][9])
                 }
                 continue;
             }
+            if ((i==0||board[i-1][j]==-1)&&(j==0||board[i][j-1]==-1)&&(i==8||board[i+1][j]==-1)&&(j==8||board[i][j+1]==-1)){
+                result[i][j]=0;
+                continue;//防自杀
+            }
             //啥都不是，能下
             result[i][j] = 1;
             r++;
@@ -304,12 +308,6 @@ private:
                                 maxAction[k][1] = j;
                                 break;
                             }
-                            if (temp == max[k] && rand() < 5000) //六分之一的概率替换
-                            {
-                                maxAction[k][0] = i;
-                                maxAction[k][1] = j;
-                                break;
-                            }
                         }
                         board[i][j] = 0;
                         boardR[i][j] = 0; //还原
@@ -392,6 +390,7 @@ private:
 int main()
 {
     string str;
+    int count = 0;
 	int x,y;
 	// 读入JSON
 	getline(cin,str);
@@ -418,6 +417,7 @@ int main()
         treeNode *node = root.treePolicy();
         int result = node->simulation();
         node->backup(result == 1 ? 1 : 0);
+        count++;
     }
     int max = 0;
     int *bestAction = root.childrenAction[0];
@@ -431,8 +431,9 @@ int main()
     }
     Json::Value ret;
 	Json::Value action;
-    action["x"]=bestAction[0]; action["y"]=bestAction[1];
+    action["x"]=bestAction[1]; action["y"]=bestAction[0];
 	ret["response"] = action;
+    ret["debug"]["treenodecount"]=count;
 	Json::FastWriter writer;
     cout << writer.write(ret) << endl;
 }
