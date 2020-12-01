@@ -135,9 +135,13 @@ int getValidPositions(int board[9][9], int result[9][9])
                 r++;
                 continue;
             }
-            if (positionState[i][j] >> 1 % 2 == 1) //己方唯一气，不能下
+            if (positionState[i][j] >> 1 % 2 == 1) //己方唯一气，边上还没气的话就不能下
             {
-                result[i][j] = 0;
+                if((i!=0&&board[i-1][j]==0)||(j!=0&&board[i][j-1]==0)||(i!=8&&board[i+1][j]==0)||(j!=8&&board[i][j+1]==0)){
+                    result[i][j] = 1;
+                }else{
+                    result[i][j] = 0;
+                }
                 continue;
             }
             //啥都不是，能下
@@ -151,9 +155,9 @@ int getValidPositions(int board[9][9], int result[9][9])
 int main()
 {
     int board[9][9] = {
-        {0, 1, 1, 0, 0, 0, 0, 0, 0},
         {1, 1, 1, 1, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {-1, -1, -1, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},

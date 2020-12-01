@@ -145,7 +145,11 @@ int getValidPositions(int board[9][9], int result[9][9])
             }
             if (positionState[i][j] / 2 % 2 == 1) //己方唯一气，不能下
             {
-                result[i][j] = 0;
+                if((i!=0&&board[i-1][j]==0)||(j!=0&&board[i][j-1]==0)||(i!=8&&board[i+1][j]==0)||(j!=8&&board[i][j+1]==0)){
+                    result[i][j] = 1;
+                }else{
+                    result[i][j] = 0;
+                }
                 continue;
             }
             //啥都不是，能下
@@ -400,12 +404,12 @@ int main()
     int turnID = input["responses"].size();
 	for (int i = 0; i < turnID; i++) 
 	{
-		x=input["requests"][i]["x"].asInt(), y=input["requests"][i]["y"].asInt();
+		x=input["requests"][i]["y"].asInt(), y=input["requests"][i]["x"].asInt();
 		if (x!=-1) board[x][y]=-1;
-		x=input["responses"][i]["x"].asInt(), y=input["responses"][i]["y"].asInt();
+		x=input["responses"][i]["y"].asInt(), y=input["responses"][i]["x"].asInt();
 		if (x!=-1) board[x][y]=1;
 	}
-    x=input["requests"][turnID]["x"].asInt(), y=input["requests"][turnID]["y"].asInt();
+    x=input["requests"][turnID]["y"].asInt(), y=input["requests"][turnID]["x"].asInt();
     int actionR[2] = {x, y};
     srand(233);
     treeNode root(board, actionR, 0, nullptr);
