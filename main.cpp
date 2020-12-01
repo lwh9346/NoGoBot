@@ -26,14 +26,14 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             else
             {
                 positionState[i][j] |= 1;
-                if (unicGasGroup[i][j]==-1)
+                if (unicGasGroup[i][j] == -1)
                 {
                     unicGasGroup[i][j] = groupIndex;
                 }
             }
             break;
-        case 1: //如果之前有唯一气的话现在就有两个气了
-            if (groupGasPosition[groupIndex][0]==i&&groupGasPosition[groupIndex][1]==j)//条件成立说明找到的是同一个气
+        case 1:                                                                               //如果之前有唯一气的话现在就有两个气了
+            if (groupGasPosition[groupIndex][0] == i && groupGasPosition[groupIndex][1] == j) //条件成立说明找到的是同一个气
             {
                 break;
             }
@@ -42,12 +42,12 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             {
                 //己方
                 positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] |= 4;
-                positionState[i][j]|=4;
+                positionState[i][j] |= 4;
             }
             else if (unicGasGroup[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] == groupIndex) //如果是自己留下来的唯一气的话，现在就不是唯一气了，否则还是
             {
                 //对方
-                positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] = positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]]/2*2;
+                positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] = positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] / 2 * 2;
             }
             break;
         case 2:
@@ -153,16 +153,20 @@ int getValidPositions(int board[9][9], int result[9][9])
             }
             if (positionState[i][j] / 2 % 2 == 1) //己方唯一气，不能下
             {
-                if((i!=0&&board[i-1][j]==0)||(j!=0&&board[i][j-1]==0)||(i!=8&&board[i+1][j]==0)||(j!=8&&board[i][j+1]==0)){
+                if ((i != 0 && board[i - 1][j] == 0) || (j != 0 && board[i][j - 1] == 0) || (i != 8 && board[i + 1][j] == 0) || (j != 8 && board[i][j + 1] == 0))
+                {
                     result[i][j] = 1;
-                }else{
+                }
+                else
+                {
                     result[i][j] = 0;
                 }
                 continue;
             }
-            if ((i==0||board[i-1][j]==-1)&&(j==0||board[i][j-1]==-1)&&(i==8||board[i+1][j]==-1)&&(j==8||board[i][j+1]==-1)){
-                result[i][j]=0;
-                continue;//防自杀
+            if ((i == 0 || board[i - 1][j] == -1) && (j == 0 || board[i][j - 1] == -1) && (i == 8 || board[i + 1][j] == -1) && (j == 8 || board[i][j + 1] == -1))
+            {
+                result[i][j] = 0;
+                continue; //防自杀
             }
             //啥都不是，能下
             result[i][j] = 1;
@@ -294,43 +298,42 @@ private:
         }
         int validPositionCount = getValidPositions(board, result);
         int validPositions[81];
-        int n=0;
+        int n = 0;
         for (int i = 0; i < 9; i++)
         {
             for (int j = 0; j < 9; j++)
             {
                 if (result[i][j])
                 {
-                    validPositions[n]=9*i+j;
+                    validPositions[n] = 9 * i + j;
                     n++;
                 }
             }
         }
-        
-        if (validPositionCount<=branchNum)
+
+        if (validPositionCount <= branchNum)
         {
-            childrenCountMax=validPositionCount;
+            childrenCountMax = validPositionCount;
             for (int i = 0; i < validPositionCount; i++)
             {
-                childrenAction[i][0]=validPositions[i]/9;
-                childrenAction[i][1]=validPositions[i]%9;
+                childrenAction[i][0] = validPositions[i] / 9;
+                childrenAction[i][1] = validPositions[i] % 9;
             }
-        }else
+        }
+        else
         {
-            childrenCountMax=branchNum;
+            childrenCountMax = branchNum;
             //可选节点多了，随机抽取多个节点
             for (int k = 0; k < validPositionCount; k++)
             {
-                swap(validPositions[rand()%validPositionCount],validPositions[rand()%validPositionCount]);
+                swap(validPositions[rand() % validPositionCount], validPositions[rand() % validPositionCount]);
             }
             for (int i = 0; i < branchNum; i++)
             {
-                childrenAction[i][0]=validPositions[i]/9;
-                childrenAction[i][1]=validPositions[i]%9;
+                childrenAction[i][0] = validPositions[i] / 9;
+                childrenAction[i][1] = validPositions[i] % 9;
             }
         }
-        
-        
     }
     int result(int board[9][9])
     {
@@ -387,29 +390,31 @@ int main()
 {
     string str;
     int count = 0;
-	int x,y;
-	// 读入JSON
-	getline(cin,str);
+    int x, y;
+    // 读入JSON
+    getline(cin, str);
     int start = clock();
-	//getline(cin, str);
-	Json::Reader reader;
-	Json::Value input;
-	reader.parse(str, input); 
-    int board[9][9]={0};
+    //getline(cin, str);
+    Json::Reader reader;
+    Json::Value input;
+    reader.parse(str, input);
+    int board[9][9] = {0};
     int turnID = input["responses"].size();
-	for (int i = 0; i < turnID; i++) 
-	{
-		x=input["requests"][i]["y"].asInt(), y=input["requests"][i]["x"].asInt();
-		if (x!=-1) board[x][y]=1;
-		x=input["responses"][i]["y"].asInt(), y=input["responses"][i]["x"].asInt();
-		if (x!=-1) board[x][y]=-1;
-	}
-    x=input["requests"][turnID]["y"].asInt(), y=input["requests"][turnID]["x"].asInt();
+    for (int i = 0; i < turnID; i++)
+    {
+        x = input["requests"][i]["y"].asInt(), y = input["requests"][i]["x"].asInt();
+        if (x != -1)
+            board[x][y] = 1;
+        x = input["responses"][i]["y"].asInt(), y = input["responses"][i]["x"].asInt();
+        if (x != -1)
+            board[x][y] = -1;
+    }
+    x = input["requests"][turnID]["y"].asInt(), y = input["requests"][turnID]["x"].asInt();
     int actionR[2] = {x, y};
     srand(233);
     treeNode root(board, actionR, 0, nullptr);
-    int timeout=(int)(0.95*(double)CLOCKS_PER_SEC);
-    while (clock()-start < timeout /*这里是停止搜索的条件*/)
+    int timeout = (int)(0.95 * (double)CLOCKS_PER_SEC);
+    while (clock() - start < timeout /*这里是停止搜索的条件*/)
     {
         treeNode *node = root.treePolicy();
         int result = node->simulation();
@@ -427,10 +432,11 @@ int main()
         }
     }
     Json::Value ret;
-	Json::Value action;
-    action["x"]=bestAction[1]; action["y"]=bestAction[0];
-	ret["response"] = action;
-    ret["debug"]["treenodecount"]=count;
-	Json::FastWriter writer;
+    Json::Value action;
+    action["x"] = bestAction[1];
+    action["y"] = bestAction[0];
+    ret["response"] = action;
+    ret["debug"]["treenodecount"] = count;
+    Json::FastWriter writer;
     cout << writer.write(ret) << endl;
 }
