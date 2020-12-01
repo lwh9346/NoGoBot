@@ -323,59 +323,83 @@ private:
         else
         {
             childrenCountMax = branchNum;
-            int positionMark[81];//记录节点分数，分数越高质量越高
+            int positionMark[81]; //记录节点分数，分数越高质量越高
 
             //计算分数
             for (int i = 0; i < validPositionCount; i++)
             {
-                int x,y;
-                x=validPositions[i]/9;
-                y=validPositions[i]%9;
-                int temp=0;//分数
+                int x, y;
+                x = validPositions[i] / 9;
+                y = validPositions[i] % 9;
+                int temp = 0; //分数
 
                 //对角有棋子，加分
-                if (x!=0&&y!=0&&board[x-1][y-1]!=0){temp++;}
-                if (x!=0&&y!=8&&board[x-1][y+1]!=0){temp++;}
-                if (x!=8&&y!=0&&board[x+1][y-1]!=0){temp++;}
-                if (x!=8&&y!=8&&board[x+1][y+1]!=0){temp++;}
+                if (x != 0 && y != 0 && board[x - 1][y - 1] != 0)
+                {
+                    temp += 3;
+                }
+                if (x != 0 && y != 8 && board[x - 1][y + 1] != 0)
+                {
+                    temp += 3;
+                }
+                if (x != 8 && y != 0 && board[x + 1][y - 1] != 0)
+                {
+                    temp += 3;
+                }
+                if (x != 8 && y != 8 && board[x + 1][y + 1] != 0)
+                {
+                    temp += 3;
+                }
 
                 //上下左右有己方棋子，减分
-                if (x!=0&&board[x-1][y]==1){temp--;}
-                if (x!=8&&board[x+1][y]==1){temp--;}
-                if (y!=0&&board[x][y-1]==1){temp--;}
-                if (y!=8&&board[x][y+1]==1){temp--;}
+                if (x != 0 && board[x - 1][y] == 1)
+                {
+                    temp -= 5;
+                }
+                if (x != 8 && board[x + 1][y] == 1)
+                {
+                    temp -= 5;
+                }
+                if (y != 0 && board[x][y - 1] == 1)
+                {
+                    temp -= 5;
+                }
+                if (y != 8 && board[x][y + 1] == 1)
+                {
+                    temp -= 5;
+                }
 
                 //模拟一步
-                board[x][y]=1;
-                boardR[x][y]=-1;
+                board[x][y] = 1;
+                boardR[x][y] = -1;
 
-                temp+=getValidPositions(board,resultTemp);
-                temp-=getValidPositions(boardR,resultTemp);
+                temp += getValidPositions(board, resultTemp);
+                temp -= getValidPositions(boardR, resultTemp);
 
-                board[x][y]=0;
-                boardR[x][y]=-1;
-                
+                board[x][y] = 0;
+                boardR[x][y] = 0;
+
                 //赋分
-                positionMark[i]=temp;
+                positionMark[i] = temp;
             }
-            
+
             //按分数排序
             for (int i = 0; i < branchNum; i++)
             {
-                int temp=positionMark[i];
-                int tempI=i;
+                int temp = positionMark[i];
+                int tempI = i;
                 for (int j = i; j < validPositionCount; j++)
                 {
-                    if (temp<positionMark[j])
+                    if (temp < positionMark[j])
                     {
-                        temp=positionMark[j];
-                        tempI=j;
+                        temp = positionMark[j];
+                        tempI = j;
                     }
                 }
-                swap(positionMark[i],positionMark[tempI]);
-                swap(validPositions[i],validPositions[tempI]);
+                swap(positionMark[i], positionMark[tempI]);
+                swap(validPositions[i], validPositions[tempI]);
             }
-            
+
             //取出前面几名
             for (int i = 0; i < branchNum; i++)
             {
@@ -415,23 +439,78 @@ private:
     {
         //返回落子坐标
         int result[9][9];
-        int validPositionCount = 0;
-        getValidPositions(board, result);
-        int actions[81][2];
+        int validPositionCount = getValidPositions(board, result);
+        int validPositions[81];
+        int n = 0;
         for (int i = 0; i < 9; i++)
         {
             for (int j = 0; j < 9; j++)
             {
                 if (result[i][j])
                 {
-                    actions[validPositionCount][0] = i;
-                    actions[validPositionCount][1] = j;
-                    validPositionCount++;
+                    validPositions[n] = 9 * i + j;
+                    n++;
                 }
             }
         }
-        int i = rand() % validPositionCount;
-        return actions[i][0] * 9 + actions[i][1];
+
+        int max=minInt;
+        int maxI=0;
+        
+        //计算分数
+        for (int i = 0; i < validPositionCount; i++)
+        {
+            int x, y;
+            x = validPositions[i] / 9;
+            y = validPositions[i] % 9;
+            int temp = 0; //分数
+
+            //对角有棋子，加分
+            if (x != 0 && y != 0 && board[x - 1][y - 1] != 0)
+            {
+                temp += 3;
+            }
+            if (x != 0 && y != 8 && board[x - 1][y + 1] != 0)
+            {
+                temp += 3;
+            }
+            if (x != 8 && y != 0 && board[x + 1][y - 1] != 0)
+            {
+                temp += 3;
+            }
+            if (x != 8 && y != 8 && board[x + 1][y + 1] != 0)
+            {
+                temp += 3;
+            }
+
+            //上下左右有己方棋子，减分
+            if (x != 0 && board[x - 1][y] == 1)
+            {
+                temp -= 5;
+            }
+            if (x != 8 && board[x + 1][y] == 1)
+            {
+                temp -= 5;
+            }
+            if (y != 0 && board[x][y - 1] == 1)
+            {
+                temp -= 5;
+            }
+            if (y != 8 && board[x][y + 1] == 1)
+            {
+                temp -= 5;
+            }
+
+            //快速策略，不进行模拟
+            if (temp>max)
+            {
+                max=temp;
+                maxI=i;
+            }
+            
+        }
+
+        return validPositions[maxI];
     }
 };
 
