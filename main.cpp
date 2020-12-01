@@ -5,7 +5,7 @@
 #include "./jsoncpp/json.h"
 #include <string>
 #include <cstring>
-#define branchNum 24
+#define branchNum 16
 #define minInt -2147483648
 using namespace std;
 
@@ -340,37 +340,37 @@ private:
                 //对角有棋子，加分
                 if (x != 0 && y != 0 && board[x - 1][y - 1] != 0)
                 {
-                    temp += 5;
+                    temp += 1;
                 }
                 if (x != 0 && y != 8 && board[x - 1][y + 1] != 0)
                 {
-                    temp += 5;
+                    temp += 1;
                 }
                 if (x != 8 && y != 0 && board[x + 1][y - 1] != 0)
                 {
-                    temp += 5;
+                    temp += 1;
                 }
                 if (x != 8 && y != 8 && board[x + 1][y + 1] != 0)
                 {
-                    temp += 5;
+                    temp += 1;
                 }
 
                 //上下左右有己方棋子，减分
                 if (x != 0 && board[x - 1][y] == 1)
                 {
-                    temp -= 5;
+                    temp -= 1;
                 }
                 if (x != 8 && board[x + 1][y] == 1)
                 {
-                    temp -= 5;
+                    temp -= 1;
                 }
                 if (y != 0 && board[x][y - 1] == 1)
                 {
-                    temp -= 5;
+                    temp -= 1;
                 }
                 if (y != 8 && board[x][y + 1] == 1)
                 {
-                    temp -= 5;
+                    temp -= 1;
                 }
 
                 //模拟一步
