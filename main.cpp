@@ -9,6 +9,8 @@
 #define minInt -2147483648
 using namespace std;
 
+static int count=0;
+
 void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], char group[9][9], char groupGasState[81], char groupGasPosition[81][2], char positionState[9][9], char unicGasGroup[9][9])
 {
     if (board[i][j] == 0)
@@ -278,7 +280,7 @@ public:
                 node->q++;
             }
             node->n++;
-            node->score = double(node->q) / double(node->n) + 0.707 * sqrt(double(node->depth) / double(node->n)); //得分公式
+            node->score = double(node->q) / double(node->n) + 1.414 * sqrt(log(double(::count)) / double(node->n)); //得分公式
             node = node->parent;
             d++;
         }
@@ -338,19 +340,19 @@ private:
                 //对角有棋子，加分
                 if (x != 0 && y != 0 && board[x - 1][y - 1] != 0)
                 {
-                    temp += 3;
+                    temp += 5;
                 }
                 if (x != 0 && y != 8 && board[x - 1][y + 1] != 0)
                 {
-                    temp += 3;
+                    temp += 5;
                 }
                 if (x != 8 && y != 0 && board[x + 1][y - 1] != 0)
                 {
-                    temp += 3;
+                    temp += 5;
                 }
                 if (x != 8 && y != 8 && board[x + 1][y + 1] != 0)
                 {
-                    temp += 3;
+                    temp += 5;
                 }
 
                 //上下左右有己方棋子，减分
@@ -371,30 +373,12 @@ private:
                     temp -= 2;
                 }
 
-                //上下左右有对方棋子，加分（破眼）
-                if (x != 0 && board[x - 1][y] == -1)
-                {
-                    temp += 3;
-                }
-                if (x != 8 && board[x + 1][y] == -1)
-                {
-                    temp += 3;
-                }
-                if (y != 0 && board[x][y - 1] == -1)
-                {
-                    temp += 3;
-                }
-                if (y != 8 && board[x][y + 1] == -1)
-                {
-                    temp += 3;
-                }
-
                 //模拟一步
                 board[x][y] = 1;
                 boardR[x][y] = -1;
 
-                temp += getValidPositions(board, resultTemp) * 5;
-                temp -= getValidPositions(boardR, resultTemp) * 5;
+                temp += getValidPositions(board, resultTemp) * 4;
+                temp -= getValidPositions(boardR, resultTemp) * 4;
 
                 board[x][y] = 0;
                 boardR[x][y] = 0;
@@ -536,7 +520,6 @@ private:
 int main()
 {
     string str;
-    int count = 0;
     int x, y;
     // 读入JSON
     getline(cin, str);
@@ -563,10 +546,10 @@ int main()
     int timeout = (int)(0.95 * (double)CLOCKS_PER_SEC);
     while (clock() - start < timeout /*这里是停止搜索的条件*/)
     {
+        ::count++;
         treeNode *node = root.treePolicy();
         int result = node->simulation();
         node->backup(result == 1 ? 1 : 0);
-        count++;
     }
     int max = 0;
     int *bestAction = root.childrenAction[0];
@@ -580,10 +563,13 @@ int main()
     }
     Json::Value ret;
     Json::Value action;
+    Json::Value debug;
     action["x"] = bestAction[1];
     action["y"] = bestAction[0];
     ret["response"] = action;
-    ret["debug"]["treenodecount"] = count;
+    debug["node"] = ::count;
+    debug["rate"] = ((double)root.q)/((double)root.n);
+    ret["debug"] = debug;
     Json::FastWriter writer;
     cout << writer.write(ret) << endl;
 }
