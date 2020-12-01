@@ -513,11 +513,13 @@ int main()
         node->backup(result == 1 ? 0 : 1);
     }
     int max = 0;
+    int maxI = 0;
     int *bestAction = root.childrenAction[0];
     for (int i = 0; i < root.childrenCount; i++)
     {
         if (max < root.children[i]->n)
         {
+            maxI = i;
             max = root.children[i]->n;
             bestAction = root.childrenAction[i];
         }
@@ -528,7 +530,7 @@ int main()
     action["y"] = bestAction[0];
     ret["response"] = action;
     char buffer[4096];
-    sprintf(buffer, "MCTS节点数:%d,当前预估胜率:%.3f", ::count, ((double)(root.n - root.q)) / ((double)root.n));
+    sprintf(buffer, "MCTS节点数:%d,当前预估胜率:%.3f", ::count, ((double)(root.children[maxI]->q)) / ((double)root.children[maxI]->n));
     ret["debug"] = buffer;
     Json::FastWriter writer;
     cout << writer.write(ret) << endl;
