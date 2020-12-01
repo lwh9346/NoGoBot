@@ -358,19 +358,19 @@ private:
                 //上下左右有己方棋子，减分
                 if (x != 0 && board[x - 1][y] == 1)
                 {
-                    temp -= 15;
+                    temp -= 5;
                 }
                 if (x != 8 && board[x + 1][y] == 1)
                 {
-                    temp -= 15;
+                    temp -= 5;
                 }
                 if (y != 0 && board[x][y - 1] == 1)
                 {
-                    temp -= 15;
+                    temp -= 5;
                 }
                 if (y != 8 && board[x][y + 1] == 1)
                 {
-                    temp -= 15;
+                    temp -= 5;
                 }
 
                 //模拟一步
@@ -510,7 +510,7 @@ int main()
         ::count++;
         treeNode *node = root.treePolicy();
         int result = node->simulation();
-        node->backup(result == 1 ? 1 : 0);
+        node->backup(result == 1 ? 0 : 1);
     }
     int max = 0;
     int *bestAction = root.childrenAction[0];
