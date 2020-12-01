@@ -524,13 +524,12 @@ int main()
     }
     Json::Value ret;
     Json::Value action;
-    Json::Value debug;
     action["x"] = bestAction[1];
     action["y"] = bestAction[0];
     ret["response"] = action;
-    debug["node"] = ::count;
-    debug["rate"] = ((double)root.q) / ((double)root.n);
-    ret["debug"] = debug;
+    char buffer[4096];
+    sprintf(buffer, "MCTS节点数:%d,当前预估胜率:%.3f", ::count, ((double)(root.n - root.q)) / ((double)root.n));
+    ret["debug"] = buffer;
     Json::FastWriter writer;
     cout << writer.write(ret) << endl;
 }
