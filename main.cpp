@@ -403,7 +403,8 @@ int main()
     int actionR[2] = {x, y};
     srand(233);
     treeNode root(board, actionR, 0, nullptr);
-    while (clock()-start < 950 /*这里是停止搜索的条件*/)
+    int timeout=(int)(0.95*(double)CLOCKS_PER_SEC);
+    while (clock()-start < timeout /*这里是停止搜索的条件*/)
     {
         treeNode *node = root.treePolicy();
         int result = node->simulation();
