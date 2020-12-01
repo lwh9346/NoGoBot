@@ -33,6 +33,10 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             }
             break;
         case 1: //如果之前有唯一气的话现在就有两个气了
+            if (groupGasPosition[groupIndex][0]==i&&groupGasPosition[groupIndex][1]==j)//条件成立说明找到的是同一个气
+            {
+                break;
+            }
             groupGasState[groupIndex] = 2;
             if (board[x][y] == 1)
             {
