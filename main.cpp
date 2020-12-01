@@ -5,7 +5,7 @@
 #include "./jsoncpp/json.h"
 #include <string>
 #include <cstring>
-#define branchNum 4
+#define branchNum 8
 #define minInt -2147483648
 using namespace std;
 
@@ -26,7 +26,10 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             else
             {
                 positionState[i][j] |= 1;
-                unicGasGroup[i][j] = groupIndex;
+                if (unicGasGroup[i][j]==-1)
+                {
+                    unicGasGroup[i][j] = groupIndex;
+                }
             }
             break;
         case 1: //如果之前有唯一气的话现在就有两个气了
@@ -285,56 +288,44 @@ private:
             }
         }
         int validPositionCount = getValidPositions(board, result);
-        if (validPositionCount > branchNum)
+        int validPositions[81];
+        int n=0;
+        for (int i = 0; i < 9; i++)
         {
-            childrenCountMax = branchNum;
-            int max[branchNum] = {minInt, minInt, minInt, minInt};
-            int maxAction[branchNum][2];
-            for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
             {
-                for (int j = 0; j < 9; j++)
+                if (result[i][j])
                 {
-                    if (result[i][j])
-                    {
-                        board[i][j] = 1;
-                        boardR[i][j] = -1; //模拟一步
-                        int temp = getValidPositions(board, resultTemp) - getValidPositions(boardR, resultTemp);
-                        for (int k = 0; k < branchNum; k++)
-                        {
-                            if (temp > max[k])
-                            {
-                                max[k] = temp;
-                                maxAction[k][0] = i;
-                                maxAction[k][1] = j;
-                                break;
-                            }
-                        }
-                        board[i][j] = 0;
-                        boardR[i][j] = 0; //还原
-                    }
+                    validPositions[n]=9*i+j;
+                    n++;
                 }
+            }
+        }
+        
+        if (validPositionCount<=branchNum)
+        {
+            childrenCountMax=validPositionCount;
+            for (int i = 0; i < validPositionCount; i++)
+            {
+                childrenAction[i][0]=validPositions[i]/9;
+                childrenAction[i][1]=validPositions[i]%9;
+            }
+        }else
+        {
+            childrenCountMax=branchNum;
+            //可选节点多了，随机抽取多个节点
+            for (int k = 0; k < validPositionCount; k++)
+            {
+                swap(validPositions[rand()%validPositionCount],validPositions[rand()%validPositionCount]);
             }
             for (int i = 0; i < branchNum; i++)
             {
-                childrenAction[i][0] = maxAction[i][0];
-                childrenAction[i][1] = maxAction[i][1];
+                childrenAction[i][0]=validPositions[i]/9;
+                childrenAction[i][1]=validPositions[i]%9;
             }
         }
-        else
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    if (result[i][j])
-                    {
-                        childrenAction[childrenCountMax][0] = i;
-                        childrenAction[childrenCountMax][1] = j;
-                        childrenCountMax++;
-                    }
-                }
-            }
-        }
+        
+        
     }
     int result(int board[9][9])
     {
