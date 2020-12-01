@@ -272,7 +272,7 @@ public:
         int d = 1;
         while (node != nullptr)
         {
-            if (delta && d % 2)
+            if (delta == d % 2)
             {
                 node->q++;
             }
