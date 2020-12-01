@@ -323,11 +323,60 @@ private:
         else
         {
             childrenCountMax = branchNum;
-            //可选节点多了，随机抽取多个节点
-            for (int k = 0; k < validPositionCount; k++)
+            int positionMark[81];//记录节点分数，分数越高质量越高
+
+            //计算分数
+            for (int i = 0; i < validPositionCount; i++)
             {
-                swap(validPositions[rand() % validPositionCount], validPositions[rand() % validPositionCount]);
+                int x,y;
+                x=validPositions[i]/9;
+                y=validPositions[i]%9;
+                int temp=0;//分数
+
+                //对角有棋子，加分
+                if (x!=0&&y!=0&&board[x-1][y-1]!=0){temp++;}
+                if (x!=0&&y!=8&&board[x-1][y+1]!=0){temp++;}
+                if (x!=8&&y!=0&&board[x+1][y-1]!=0){temp++;}
+                if (x!=8&&y!=8&&board[x+1][y+1]!=0){temp++;}
+
+                //上下左右有己方棋子，减分
+                if (x!=0&&board[x-1][y]==1){temp--;}
+                if (x!=8&&board[x+1][y]==1){temp--;}
+                if (y!=0&&board[x][y-1]==1){temp--;}
+                if (y!=8&&board[x][y+1]==1){temp--;}
+
+                //模拟一步
+                board[x][y]=1;
+                boardR[x][y]=-1;
+
+                temp+=getValidPositions(board,resultTemp);
+                temp-=getValidPositions(boardR,resultTemp);
+
+                board[x][y]=0;
+                boardR[x][y]=-1;
+                
+                //赋分
+                positionMark[i]=temp;
             }
+            
+            //按分数排序
+            for (int i = 0; i < branchNum; i++)
+            {
+                int temp=positionMark[i];
+                int tempI=i;
+                for (int j = i; j < validPositionCount; j++)
+                {
+                    if (temp<positionMark[j])
+                    {
+                        temp=positionMark[j];
+                        tempI=j;
+                    }
+                }
+                swap(positionMark[i],positionMark[tempI]);
+                swap(validPositions[i],validPositions[tempI]);
+            }
+            
+            //取出前面几名
             for (int i = 0; i < branchNum; i++)
             {
                 childrenAction[i][0] = validPositions[i] / 9;
