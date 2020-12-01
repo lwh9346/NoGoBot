@@ -404,9 +404,9 @@ int main()
 	for (int i = 0; i < turnID; i++) 
 	{
 		x=input["requests"][i]["y"].asInt(), y=input["requests"][i]["x"].asInt();
-		if (x!=-1) board[x][y]=-1;
-		x=input["responses"][i]["y"].asInt(), y=input["responses"][i]["x"].asInt();
 		if (x!=-1) board[x][y]=1;
+		x=input["responses"][i]["y"].asInt(), y=input["responses"][i]["x"].asInt();
+		if (x!=-1) board[x][y]=-1;
 	}
     x=input["requests"][turnID]["y"].asInt(), y=input["requests"][turnID]["x"].asInt();
     int actionR[2] = {x, y};
