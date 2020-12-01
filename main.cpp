@@ -5,7 +5,7 @@
 #include "./jsoncpp/json.h"
 #include <string>
 #include <cstring>
-#define branchNum 8
+#define branchNum 24
 #define minInt -2147483648
 using namespace std;
 
@@ -157,6 +157,7 @@ int getValidPositions(int board[9][9], int result[9][9])
                 if ((i != 0 && board[i - 1][j] == 0) || (j != 0 && board[i][j - 1] == 0) || (i != 8 && board[i + 1][j] == 0) || (j != 8 && board[i][j + 1] == 0))
                 {
                     result[i][j] = 1;
+                    r++;
                 }
                 else
                 {
