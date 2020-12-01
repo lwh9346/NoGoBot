@@ -26,7 +26,7 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             else
             {
                 positionState[i][j] |= 1;
-                if (unicGasGroup[i][j] == -1)
+                if (unicGasGroup[i][j] == -1 && board[x][y] == -1) //对方才来修改这个
                 {
                     unicGasGroup[i][j] = groupIndex;
                 }
@@ -48,6 +48,7 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             {
                 //对方
                 positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] = positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] / 2 * 2;
+                unicGasGroup[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] = -1;
             }
             break;
         case 2:
@@ -354,27 +355,27 @@ private:
                 //上下左右有己方棋子，减分
                 if (x != 0 && board[x - 1][y] == 1)
                 {
-                    temp -= 5;
+                    temp -= 2;
                 }
                 if (x != 8 && board[x + 1][y] == 1)
                 {
-                    temp -= 5;
+                    temp -= 2;
                 }
                 if (y != 0 && board[x][y - 1] == 1)
                 {
-                    temp -= 5;
+                    temp -= 2;
                 }
                 if (y != 8 && board[x][y + 1] == 1)
                 {
-                    temp -= 5;
+                    temp -= 2;
                 }
 
                 //模拟一步
                 board[x][y] = 1;
                 boardR[x][y] = -1;
 
-                temp += getValidPositions(board, resultTemp);
-                temp -= getValidPositions(boardR, resultTemp);
+                temp += getValidPositions(board, resultTemp) * 4;
+                temp -= getValidPositions(boardR, resultTemp) * 4;
 
                 board[x][y] = 0;
                 boardR[x][y] = 0;
@@ -454,9 +455,9 @@ private:
             }
         }
 
-        int max=minInt;
-        int maxI=0;
-        
+        int max = minInt;
+        int maxI = 0;
+
         //计算分数
         for (int i = 0; i < validPositionCount; i++)
         {
@@ -486,28 +487,27 @@ private:
             //上下左右有己方棋子，减分
             if (x != 0 && board[x - 1][y] == 1)
             {
-                temp -= 5;
+                temp -= 2;
             }
             if (x != 8 && board[x + 1][y] == 1)
             {
-                temp -= 5;
+                temp -= 2;
             }
             if (y != 0 && board[x][y - 1] == 1)
             {
-                temp -= 5;
+                temp -= 2;
             }
             if (y != 8 && board[x][y + 1] == 1)
             {
-                temp -= 5;
+                temp -= 2;
             }
 
             //快速策略，不进行模拟
-            if (temp>max)
+            if (temp > max)
             {
-                max=temp;
-                maxI=i;
+                max = temp;
+                maxI = i;
             }
-            
         }
 
         return validPositions[maxI];
