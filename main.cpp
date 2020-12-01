@@ -9,7 +9,7 @@
 #define minInt -2147483648
 using namespace std;
 
-static int count=0;
+static int count = 0;
 
 void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], char group[9][9], char groupGasState[81], char groupGasPosition[81][2], char positionState[9][9], char unicGasGroup[9][9])
 {
@@ -358,19 +358,19 @@ private:
                 //上下左右有己方棋子，减分
                 if (x != 0 && board[x - 1][y] == 1)
                 {
-                    temp -= 2;
+                    temp -= 15;
                 }
                 if (x != 8 && board[x + 1][y] == 1)
                 {
-                    temp -= 2;
+                    temp -= 15;
                 }
                 if (y != 0 && board[x][y - 1] == 1)
                 {
-                    temp -= 2;
+                    temp -= 15;
                 }
                 if (y != 8 && board[x][y + 1] == 1)
                 {
-                    temp -= 2;
+                    temp -= 15;
                 }
 
                 //模拟一步
@@ -464,46 +464,7 @@ private:
         //计算分数
         for (int i = 0; i < validPositionCount; i++)
         {
-            int x, y;
-            x = validPositions[i] / 9;
-            y = validPositions[i] % 9;
-            int temp = 0; //分数
-
-            //对角有棋子，加分
-            if (x != 0 && y != 0 && board[x - 1][y - 1] != 0)
-            {
-                temp += 3;
-            }
-            if (x != 0 && y != 8 && board[x - 1][y + 1] != 0)
-            {
-                temp += 3;
-            }
-            if (x != 8 && y != 0 && board[x + 1][y - 1] != 0)
-            {
-                temp += 3;
-            }
-            if (x != 8 && y != 8 && board[x + 1][y + 1] != 0)
-            {
-                temp += 3;
-            }
-
-            //上下左右有己方棋子，减分
-            if (x != 0 && board[x - 1][y] == 1)
-            {
-                temp -= 2;
-            }
-            if (x != 8 && board[x + 1][y] == 1)
-            {
-                temp -= 2;
-            }
-            if (y != 0 && board[x][y - 1] == 1)
-            {
-                temp -= 2;
-            }
-            if (y != 8 && board[x][y + 1] == 1)
-            {
-                temp -= 2;
-            }
+            int temp = rand();
 
             //快速策略，不进行模拟
             if (temp > max)
@@ -568,7 +529,7 @@ int main()
     action["y"] = bestAction[0];
     ret["response"] = action;
     debug["node"] = ::count;
-    debug["rate"] = ((double)root.q)/((double)root.n);
+    debug["rate"] = ((double)root.q) / ((double)root.n);
     ret["debug"] = debug;
     Json::FastWriter writer;
     cout << writer.write(ret) << endl;
