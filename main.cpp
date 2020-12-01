@@ -370,12 +370,30 @@ private:
                     temp -= 2;
                 }
 
+                //上下左右有对方棋子，加分（破眼）
+                if (x != 0 && board[x - 1][y] == -1)
+                {
+                    temp += 3;
+                }
+                if (x != 8 && board[x + 1][y] == -1)
+                {
+                    temp += 3;
+                }
+                if (y != 0 && board[x][y - 1] == -1)
+                {
+                    temp += 3;
+                }
+                if (y != 8 && board[x][y + 1] == -1)
+                {
+                    temp += 3;
+                }
+
                 //模拟一步
                 board[x][y] = 1;
                 boardR[x][y] = -1;
 
-                temp += getValidPositions(board, resultTemp) * 4;
-                temp -= getValidPositions(boardR, resultTemp) * 4;
+                temp += getValidPositions(board, resultTemp) * 5;
+                temp -= getValidPositions(boardR, resultTemp) * 5;
 
                 board[x][y] = 0;
                 boardR[x][y] = 0;
