@@ -18,20 +18,27 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             else
             {
                 positionState[i][j] |= 1;
-                unicGasGroup[i][j] = groupIndex;
+                if (unicGasGroup[i][j]==-1)
+                {
+                    unicGasGroup[i][j] = groupIndex;
+                }
             }
             break;
         case 1: //如果之前有唯一气的话现在就有两个气了
+            if (groupGasPosition[groupIndex][0]==i&&groupGasPosition[groupIndex][1]==j)//条件成立说明找到的是同一个气
+            {
+                break;
+            }
             groupGasState[groupIndex] = 2;
             if (board[x][y] == 1)
             {
                 //己方
-                positionState[groupGasPosition[groupIndex][0]][groupGasPosition[groupIndex][1]] |= 4;
+                positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] |= 4;
             }
-            else if (unicGasGroup[groupGasPosition[groupIndex][0]][groupGasPosition[groupIndex][1]] == groupIndex) //如果是自己留下来的唯一气的话，现在就不是唯一气了，否则还是
+            else if (unicGasGroup[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] == groupIndex) //如果是自己留下来的唯一气的话，现在就不是唯一气了，否则还是
             {
                 //对方
-                positionState[groupGasPosition[groupIndex][0]][groupGasPosition[groupIndex][1]] &= ~1;
+                positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] = positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]]/2*2;
             }
             break;
         case 2:
@@ -129,13 +136,13 @@ int getValidPositions(int board[9][9], int result[9][9])
                 result[i][j] = 0;
                 continue;
             }
-            if (positionState[i][j] >> 2 == 1) //己方非唯一气，能下
+            if (positionState[i][j] / 4 == 1) //己方非唯一气，能下
             {
                 result[i][j] = 1;
                 r++;
                 continue;
             }
-            if (positionState[i][j] >> 1 % 2 == 1) //己方唯一气，边上还没气的话就不能下
+            if (positionState[i][j] / 2 % 2 == 1) //己方唯一气，不能下
             {
                 if((i!=0&&board[i-1][j]==0)||(j!=0&&board[i][j-1]==0)||(i!=8&&board[i+1][j]==0)||(j!=8&&board[i][j+1]==0)){
                     result[i][j] = 1;
@@ -143,6 +150,10 @@ int getValidPositions(int board[9][9], int result[9][9])
                     result[i][j] = 0;
                 }
                 continue;
+            }
+            if ((i==0||board[i-1][j]==-1)&&(j==0||board[i][j-1]==-1)&&(i==8||board[i+1][j]==-1)&&(j==8||board[i][j+1]==-1)){
+                result[i][j]=0;
+                continue;//防自杀
             }
             //啥都不是，能下
             result[i][j] = 1;
@@ -155,9 +166,9 @@ int getValidPositions(int board[9][9], int result[9][9])
 int main()
 {
     int board[9][9] = {
-        {1, 1, 1, 1, 0, 0, 0, 0, 0},
-        {-1, -1, -1, 0, 0, 0, 0, 0, 0},
-        {1, 1, 1, 0, 0, 0, 0, 0, 0},
+        {-1, 1, 1, 0, 1, 1, -1, 0, 0},
+        {0, -1, 1, 1, 1, -1, 0, 0, 0},
+        {0, 0, -1, -1, -1, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
