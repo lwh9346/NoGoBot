@@ -42,6 +42,7 @@ void gasFinding(int x, int y, int i, int j, int groupIndex, int board[9][9], cha
             {
                 //己方
                 positionState[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] |= 4;
+                positionState[i][j]|=4;
             }
             else if (unicGasGroup[(int)groupGasPosition[groupIndex][0]][(int)groupGasPosition[groupIndex][1]] == groupIndex) //如果是自己留下来的唯一气的话，现在就不是唯一气了，否则还是
             {
