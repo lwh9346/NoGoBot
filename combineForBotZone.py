@@ -93,6 +93,7 @@ for filename in filenames:
                 codeNames.add(name)
     f.close()
 codeNames = list(codeNames)
+random.seed(233)
 random.shuffle(codeNames)
 aio = open("./aio.cpp", mode="w", encoding="utf-8")
 for include in includes:
@@ -107,7 +108,14 @@ for codeParts in codeLineParts:
             temp += p
             continue
         i = codeNames.index(p)
-        temp += "v"+str(i)
+        temp += "O"
+        temp += "o" if i%6==0 else "0"
+        temp += "o" if i%6==1 else "O"
+        temp += "O" if i%6==2 else "0"
+        temp += "o" if i%6==3 else "O"
+        temp += "0" if i%6==4 else "O"
+        temp += "o" if i%6==5 else "O"
+        temp += str(i//6)
         # temp += "/*"+p+"*/"  # 调试模式开关
     temp += "\n"
     aio.write(temp)
