@@ -5,7 +5,6 @@
 #include "./jsoncpp/json.h"
 #include <string>
 #include <cstring>
-#include "./validPosition.cpp"
 #include "./mctNode.cpp"
 using namespace std;
 

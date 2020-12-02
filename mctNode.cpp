@@ -80,41 +80,37 @@ public:
     //返回由当前节点开始模拟的结果，1代表当前方赢，-1代表当前方输
     int simulation()
     {
-        int simulationBoard[9][9];
-        int simulationBoardR[9][9]; //对方的棋盘
+        int boardR[9][9]; //对方的棋盘
+        int result[9][9];
 
         //拷贝一份棋盘
         for (int i = 0; i < 9; i++)
         {
             for (int j = 0; j < 9; j++)
             {
-                simulationBoard[i][j] = board[i][j];
-                simulationBoardR[i][j] = -board[i][j];
+                boardR[i][j] = -board[i][j];
             }
         }
 
-        //开始模拟
-        int r = result(simulationBoard, simulationBoardR);
-        int round = 0;
-        while (!r)
+        double a = (double)getValidPositions(board, result);
+        double b = (double)getValidPositions(boardR, result);
+        double rate;
+        if (a == b)
         {
-            if (round % 2 == 0)
-            {
-                int a = defaultPolicy(simulationBoard);
-                simulationBoard[a / 9][a % 9] = 1;
-                simulationBoardR[a / 9][a % 9] = -1;
-                round++;
-            }
-            else
-            {
-                int a = defaultPolicy(simulationBoardR);
-                simulationBoard[a / 9][a % 9] = -1;
-                simulationBoardR[a / 9][a % 9] = 1;
-                round++;
-            }
-            r = result(simulationBoard, simulationBoardR);
+            rate = 0.5;
         }
-        return r;
+        else
+        {
+            rate = a > b ? 1.0 - 0.5 / (a - b + 1.0) : 0.5 / (b - a + 1.0);
+        }
+        if (rate * (double)RAND_MAX > (double)rand())
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     //沿树逆行，反向传播结果信息
