@@ -26,13 +26,13 @@ def getParts(line: str):
                 'void', 'delete', 'int', 'static_cast', 'volatile', 'do',
                 'long', 'struct', 'wchar_t', 'double', 'mutable', 'switch',
                 'while', 'dynamic_cast', 'namespace', 'template', 'continue']
-    builtinObjs = ["swap", "cin", "cout", "rand", "srand", "Json", "sqrt", "log", "nullptr",
-                   "string", "getline", "Reader", "size","FastWriter","sprintf","write","endl",
+    builtinObjs = ["swap", "cin", "cout", "rand", "srand", "Json", "sqrt", "log", "nullptr", "main",
+                   "string", "getline", "Reader", "size", "FastWriter", "sprintf", "write", "endl",
                    "Value", "clock", "CLOCKS_PER_SEC", "parse", "asInt", "minInt", "branchNum"]
     for i in range(l):
-        if line[i]=='"':
+        if line[i] == '"':
             inQuatation = not inQuatation
-            temp+=line[i]
+            temp += line[i]
             continue
         if spilters.__contains__(line[i]) or inQuatation:
             if not isName:
@@ -108,7 +108,7 @@ for codeParts in codeLineParts:
             continue
         i = codeNames.index(p)
         temp += "v"+str(i)
-        #temp += "/*"+p+"*/"  # 调试模式开关
+        # temp += "/*"+p+"*/"  # 调试模式开关
     temp += "\n"
     aio.write(temp)
 aio.close()
