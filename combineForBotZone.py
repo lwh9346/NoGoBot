@@ -26,7 +26,7 @@ def getParts(line: str):
                 'void', 'delete', 'int', 'static_cast', 'volatile', 'do',
                 'long', 'struct', 'wchar_t', 'double', 'mutable', 'switch',
                 'while', 'dynamic_cast', 'namespace', 'template', 'continue']
-    builtinObjs = ["swap", "cin", "cout", "rand", "srand", "Json", "sqrt", "log", "nullptr", "main",
+    builtinObjs = ["swap", "cin", "cout", "rand", "srand", "Json", "sqrt", "log", "nullptr", "main", "RAND_MAX",
                    "string", "getline", "Reader", "size", "FastWriter", "sprintf", "write", "endl",
                    "Value", "clock", "CLOCKS_PER_SEC", "parse", "asInt", "minInt", "branchNum"]
     for i in range(l):
@@ -109,12 +109,12 @@ for codeParts in codeLineParts:
             continue
         i = codeNames.index(p)
         temp += "O"
-        temp += "o" if i%6==0 else "0"
-        temp += "o" if i%6==1 else "O"
-        temp += "O" if i%6==2 else "0"
-        temp += "o" if i%6==3 else "O"
-        temp += "0" if i%6==4 else "O"
-        temp += "o" if i%6==5 else "O"
+        temp += "o" if i % 6 == 0 else "0"
+        temp += "o" if i % 6 == 1 else "O"
+        temp += "O" if i % 6 == 2 else "0"
+        temp += "o" if i % 6 == 3 else "O"
+        temp += "0" if i % 6 == 4 else "O"
+        temp += "o" if i % 6 == 5 else "O"
         temp += str(i//6)
         # temp += "/*"+p+"*/"  # 调试模式开关
     temp += "\n"
