@@ -96,6 +96,7 @@ codeNames = list(codeNames)
 random.seed(233)
 random.shuffle(codeNames)
 aio = open("./aio.cpp", mode="w", encoding="utf-8")
+aio.write("//你接下来看到的代码是经过了混淆的整活代码\n//如果你要看真正的源码的话，请访问github\n//https://github.com/lwh9346/NoGoBot\n")
 for include in includes:
     aio.write(include)
 for define in defines:
@@ -108,14 +109,15 @@ for codeParts in codeLineParts:
             temp += p
             continue
         i = codeNames.index(p)
-        temp += "O"
-        temp += "o" if i % 6 == 0 else "0"
-        temp += "o" if i % 6 == 1 else "O"
-        temp += "O" if i % 6 == 2 else "0"
-        temp += "o" if i % 6 == 3 else "O"
-        temp += "0" if i % 6 == 4 else "O"
-        temp += "o" if i % 6 == 5 else "O"
-        temp += str(i//6)
+        temp += "I" if i % 2 == 0 else "l"
+        while i != 0:
+            if i % 3 == 0:
+                temp += "1"
+            if i % 3 == 1:
+                temp += "l"
+            if i % 3 == 2:
+                temp += "I"
+            i = i//3
         # temp += "/*"+p+"*/"  # 调试模式开关
     temp += "\n"
     aio.write(temp)
