@@ -2,7 +2,7 @@
 #include <random>
 #include <iostream>
 #include "./validPosition.cpp"
-#define branchNum 81
+#define branchNum 64
 #define minInt -2147483648
 using namespace std;
 
