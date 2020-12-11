@@ -13,7 +13,7 @@ int main()
     //计数器与棋盘声明，随机数初始化
     int count = 0;
     int board[9][9] = {0};
-    srand(233);
+    srand(clock());
 
     //读入JSON
     string str;

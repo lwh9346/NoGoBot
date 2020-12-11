@@ -80,36 +80,37 @@ public:
     //返回由当前节点开始模拟的结果，1代表当前方赢，-1代表当前方输
     int simulation()
     {
+        int boardS[9][9]; //己方的棋盘
         int boardR[9][9]; //对方的棋盘
-        int result[9][9];
-
+        int res[9][9];
         //拷贝一份棋盘
         for (int i = 0; i < 9; i++)
         {
             for (int j = 0; j < 9; j++)
             {
+                boardS[i][j] = board[i][j];
                 boardR[i][j] = -board[i][j];
             }
         }
-
-        double a = (double)getValidPositions(board, result);
-        double b = (double)getValidPositions(boardR, result);
-        double rate;
-        if (a == b)
-        {
-            rate = 0.5;
+        int x=getValidPositions(boardS,res);
+        int y=getValidPositions(boardR,res);
+        if (y-x>3){
+            return -1;
         }
-        else
-        {
-            rate = a > b ? 1.0 - 0.5 / (a - b + 1.0) : 0.5 / (b - a + 1.0);
-        }
-        if (rate * (double)RAND_MAX > (double)rand())
-        {
+        if (x-y>3){
             return 1;
         }
-        else
+        int round = 0; //偶数代表当前方落子，奇数代表对方落子
+        while (true)
         {
-            return -1;
+            int a = round % 2 ? defaultPolicy(boardR) : defaultPolicy(boardS);
+            if (a == -1)
+            {
+                return round % 2 ? 1 : -1;
+            }
+            boardS[a / 9][a % 9] = round % 2 ? -1 : 1;
+            boardR[a / 9][a % 9] = round % 2 ? 1 : -1;
+            round++;
         }
     }
 
@@ -137,15 +138,6 @@ private:
     void evaluate()
     {
         int result[9][9];
-        int resultTemp[9][9];
-        int boardR[9][9]; //对方视角的棋盘
-        for (int i = 0; i < 9; i++)
-        {
-            for (int j = 0; j < 9; j++)
-            {
-                boardR[i][j] = -board[i][j];
-            }
-        }
         int validPositionCount = getValidPositions(board, result);
         int validPositions[81];
         int n = 0;
@@ -186,48 +178,38 @@ private:
                 //对角有棋子，加分
                 if (x != 0 && y != 0 && board[x - 1][y - 1] != 0)
                 {
-                    temp += 1;
+                    temp = 1;
                 }
                 if (x != 0 && y != 8 && board[x - 1][y + 1] != 0)
                 {
-                    temp += 1;
+                    temp = 1;
                 }
                 if (x != 8 && y != 0 && board[x + 1][y - 1] != 0)
                 {
-                    temp += 1;
+                    temp = 1;
                 }
                 if (x != 8 && y != 8 && board[x + 1][y + 1] != 0)
                 {
-                    temp += 1;
+                    temp = 1;
                 }
 
-                //上下左右有己方棋子，减分
-                if (x != 0 && board[x - 1][y] == 1)
+                //上下左右有棋子或贴边，加分
+                if (x == 0 || board[x - 1][y] != 0)
                 {
-                    temp -= 1;
+                    temp = 1;
                 }
-                if (x != 8 && board[x + 1][y] == 1)
+                if (x == 8 || board[x + 1][y] != 0)
                 {
-                    temp -= 1;
+                    temp = 1;
                 }
-                if (y != 0 && board[x][y - 1] == 1)
+                if (y == 0 || board[x][y - 1] != 0)
                 {
-                    temp -= 1;
+                    temp = 1;
                 }
-                if (y != 8 && board[x][y + 1] == 1)
+                if (y == 8 || board[x][y + 1] != 0)
                 {
-                    temp -= 1;
+                    temp = 1;
                 }
-
-                //模拟一步
-                board[x][y] = 1;
-                boardR[x][y] = -1;
-
-                temp += getValidPositions(board, resultTemp) * 4;
-                temp -= getValidPositions(boardR, resultTemp) * 4;
-
-                board[x][y] = 0;
-                boardR[x][y] = 0;
 
                 //赋分
                 positionMark[i] = temp;
@@ -259,34 +241,17 @@ private:
         }
     }
 
-    //返回当前棋局状态
-    //0棋局未结束
-    //1棋局结束，当前方赢
-    //-1棋局结束，当前方输
-    int result(int board[9][9], int boardR[9][9])
-    {
-
-        int result[9][9];
-        int a, b;
-        a = getValidPositions(board, result);
-        b = getValidPositions(boardR, result);
-        if (a != 0 && b != 0)
-        {
-            return 0;
-        }
-        if (a == 0)
-        {
-            return -1;
-        }
-        return 1;
-    }
-
     //快速落子策略
     //返回落子坐标变换后的值，x=result/9，y=result%9
+    //-1代表无子可下
     int defaultPolicy(int board[9][9])
     {
         int result[9][9];
         int validPositionCount = getValidPositions(board, result);
+        if (validPositionCount == 0)
+        {
+            return -1;
+        }
         int validPositions[81];
         int n = 0;
         for (int i = 0; i < 9; i++)
@@ -300,22 +265,7 @@ private:
                 }
             }
         }
-
-        int max = minInt; //最大分数
-        int maxI = 0;     //最大分数对应的坐标的索引
-
-        //计算分数
-        for (int i = 0; i < validPositionCount; i++)
-        {
-            int temp = rand();
-
-            //快速策略，不进行模拟
-            if (temp > max)
-            {
-                max = temp;
-                maxI = i;
-            }
-        }
+        int maxI = rand() % n;
 
         return validPositions[maxI];
     }
