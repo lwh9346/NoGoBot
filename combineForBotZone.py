@@ -28,7 +28,7 @@ def getParts(line: str):
                 'while', 'dynamic_cast', 'namespace', 'template', 'continue']
     builtinObjs = ["swap", "cin", "cout", "rand", "srand", "Json", "sqrt", "log", "nullptr", "main", "RAND_MAX",
                    "string", "getline", "Reader", "size", "FastWriter", "sprintf", "write", "endl",
-                   "Value", "clock", "CLOCKS_PER_SEC", "parse", "asInt", "minInt", "branchNum"]
+                   "Value", "clock", "CLOCKS_PER_SEC", "parse", "asInt", "minInt", "branchNum", "tanh", "max", "min"]
     for i in range(l):
         if line[i] == '"':
             inQuatation = not inQuatation

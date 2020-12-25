@@ -1,15 +1,14 @@
+#include "./jsoncpp/json.h"
+#include "./mctNode.cpp"
+#include <cstring>
+#include <ctime>
+#include <iostream>
 #include <math.h>
 #include <random>
-#include <iostream>
-#include <ctime>
-#include "./jsoncpp/json.h"
 #include <string>
-#include <cstring>
-#include "./mctNode.cpp"
 using namespace std;
 
-int main()
-{
+int main() {
     //计数器与棋盘声明，随机数初始化
     int count = 0;
     int board[9][9] = {0};
@@ -29,8 +28,7 @@ int main()
     reader.parse(str, input);
     int turnID = input["responses"].size();
     int x, y;
-    for (int i = 0; i < turnID; i++)
-    {
+    for (int i = 0; i < turnID; i++) {
         x = input["requests"][i]["y"].asInt(), y = input["requests"][i]["x"].asInt();
         if (x != -1)
             board[x][y] = 1;
@@ -45,8 +43,7 @@ int main()
     treeNode root(board, actionR, nullptr, &count);
 
     //开始蒙特卡洛树搜索
-    while (clock() - start < timeout)
-    {
+    while (clock() - start < timeout) {
         count++;
         treeNode *node = root.treePolicy();
         int result = node->simulation();
@@ -57,10 +54,8 @@ int main()
     int max = 0;
     int maxI = 0;
     int *bestAction = root.childrenAction[0];
-    for (int i = 0; i < root.childrenCount; i++)
-    {
-        if (max < root.children[i]->n)
-        {
+    for (int i = 0; i < root.childrenCount; i++) {
+        if (max < root.children[i]->n) {
             maxI = i;
             max = root.children[i]->n;
             bestAction = root.childrenAction[i];
