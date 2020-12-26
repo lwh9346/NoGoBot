@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <random>
-#define branchNum 64
+#define branchNum 81
 #define minInt -2147483648
 using namespace std;
 
@@ -130,137 +130,10 @@ private:
                 }
             }
         }
-
-        if (validPositionCount <= branchNum) {
-            childrenCountMax = validPositionCount;
-            for (int i = 0; i < validPositionCount; i++) {
-                childrenAction[i][0] = validPositions[i] / 9;
-                childrenAction[i][1] = validPositions[i] % 9;
-            }
-        } else {
-            childrenCountMax = branchNum;
-            int positionMark[81]; //记录节点分数，分数越高质量越高
-
-            //计算分数
-            for (int i = 0; i < validPositionCount; i++) {
-                int x, y;
-                x = validPositions[i] / 9;
-                y = validPositions[i] % 9;
-                int temp = 0; //分数
-
-                //对角有棋子，加分
-                if (x != 0 && y != 0 && board[x - 1][y - 1] != 0) {
-                    temp = 1;
-                }
-                if (x != 0 && y != 8 && board[x - 1][y + 1] != 0) {
-                    temp = 1;
-                }
-                if (x != 8 && y != 0 && board[x + 1][y - 1] != 0) {
-                    temp = 1;
-                }
-                if (x != 8 && y != 8 && board[x + 1][y + 1] != 0) {
-                    temp = 1;
-                }
-
-                //上下左右有棋子或贴边，加分
-                if (x == 0 || board[x - 1][y] != 0) {
-                    temp = 1;
-                }
-                if (x == 8 || board[x + 1][y] != 0) {
-                    temp = 1;
-                }
-                if (y == 0 || board[x][y - 1] != 0) {
-                    temp = 1;
-                }
-                if (y == 8 || board[x][y + 1] != 0) {
-                    temp = 1;
-                }
-
-                //赋分
-                positionMark[i] = temp;
-            }
-
-            //按分数排序
-            for (int i = 0; i < branchNum; i++) {
-                int temp = positionMark[i];
-                int tempI = i;
-                for (int j = i; j < validPositionCount; j++) {
-                    if (temp < positionMark[j]) {
-                        temp = positionMark[j];
-                        tempI = j;
-                    }
-                }
-                swap(positionMark[i], positionMark[tempI]);
-                swap(validPositions[i], validPositions[tempI]);
-            }
-
-            //取出前面几名
-            for (int i = 0; i < branchNum; i++) {
-                childrenAction[i][0] = validPositions[i] / 9;
-                childrenAction[i][1] = validPositions[i] % 9;
-            }
+        childrenCountMax = validPositionCount;
+        for (int i = 0; i < validPositionCount; i++) {
+            childrenAction[i][0] = validPositions[i] / 9;
+            childrenAction[i][1] = validPositions[i] % 9;
         }
-    }
-
-    //快速落子策略
-    //返回落子坐标变换后的值，x=result/9，y=result%9
-    //-1代表无子可下
-    int defaultPolicy(int board[9][9]) {
-        int result[9][9];
-        int validPositionCount = getValidPositions(board, result);
-        if (validPositionCount == 0) {
-            return -1;
-        }
-        int validPositions[81];
-        int n = 0;
-        for (int i = 0; i < 81; i++) {
-            if (result[i / 9][i % 9]) {
-                validPositions[n] = i;
-                n++;
-            }
-        }
-        int positionMark[81];
-        for (int i = 0; i < n; i++) {
-            int x = validPositions[i] / 9;
-            int y = validPositions[i] % 9;
-            int tmp = 0;
-            //对角有棋子，加分
-            if (x != 0 && y != 0 && board[x - 1][y - 1] != 0) {
-                tmp += 2;
-            }
-            if (x != 0 && y != 8 && board[x - 1][y + 1] != 0) {
-                tmp += 2;
-            }
-            if (x != 8 && y != 0 && board[x + 1][y - 1] != 0) {
-                tmp += 2;
-            }
-            if (x != 8 && y != 8 && board[x + 1][y + 1] != 0) {
-                tmp += 2;
-            }
-            //上下左右有棋子或贴边，加分
-            if (x == 0 || board[x - 1][y] != 0) {
-                tmp += 1;
-            }
-            if (x == 8 || board[x + 1][y] != 0) {
-                tmp += 1;
-            }
-            if (y == 0 || board[x][y - 1] != 0) {
-                tmp += 1;
-            }
-            if (y == 8 || board[x][y + 1] != 0) {
-                tmp += 1;
-            }
-            positionMark[i] = tmp;
-        }
-        int maxMark = positionMark[0];
-        int maxI = 0;
-        for (int i = 1; i < n; i++) {
-            if (positionMark[i] > maxMark) {
-                maxMark = positionMark[i];
-                maxI = i;
-            }
-        }
-
-        return validPositions[maxI];
     }
 };
