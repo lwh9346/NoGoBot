@@ -46,7 +46,7 @@ int main() {
     while (clock() - start < timeout) {
         count++;
         treeNode *node = root.treePolicy();
-        double result = node->simulation();
+        double result = node->defultPolicy();
         node->backup(result);
     }
 

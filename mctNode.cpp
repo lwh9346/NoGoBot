@@ -74,7 +74,7 @@ public:
     }
 
     //返回由当前节点开始模拟的结果，返回值代表当前方胜率
-    double simulation() {
+    double defultPolicy() {
         int boardR[9][9]; //对方的棋盘
         int res[9][9];
         for (int i = 0; i < 9; i++) {
