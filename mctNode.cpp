@@ -60,7 +60,7 @@ public:
         //选取分数最高的子节点进行探索
 
         for (int i = 0; i < childrenCount; i++) {
-            children[i]->score = children[i]->q / double(children[i]->n) + 0.1 * sqrt(log(double(*countPtr)) / double(children[i]->n)); //计算得分
+            children[i]->score = children[i]->q / double(children[i]->n) + 0.2 * sqrt(log(double(*countPtr)) / double(children[i]->n)); //计算得分
         }
         int bestChild = 0;
         double maxScore = 0;
@@ -73,7 +73,7 @@ public:
         return children[bestChild]->treePolicy();
     }
 
-    //返回由当前节点开始模拟的结果，1代表当前方赢，-1代表当前方输
+    //返回由当前节点开始模拟的结果，返回值代表当前方胜率
     double simulation() {
         int boardR[9][9]; //对方的棋盘
         int res[9][9];
@@ -84,7 +84,16 @@ public:
         }
         int x = getValidPositions(board, res);
         int y = getValidPositions(boardR, res);
-        double rate = (tanh(double(x - y) / double(x + y)) + 1.0) * 0.5;
+        if (x + y == 0) {
+            return 0.0;
+        }
+        if (y == 0) {
+            return 1.0;
+        }
+        if (x == 0) {
+            return -1.0;
+        }
+        double rate = tanh(double(x - y) / double(x + y));
         return rate;
     }
 
