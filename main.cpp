@@ -46,8 +46,8 @@ int main() {
     while (clock() - start < timeout) {
         count++;
         treeNode *node = root.treePolicy();
-        int result = node->simulation();
-        node->backup(result == 1 ? 1 : 0);
+        double result = node->simulation();
+        node->backup(result);
     }
 
     //选取最佳节点作为下一步

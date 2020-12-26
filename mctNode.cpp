@@ -20,7 +20,7 @@ public:
     int childrenAction[branchNum][2]; //用于创建子节点的行动
     int childrenCount;                //当前子节点个数
     int childrenCountMax;             //待探索的子节点个数
-    int q;                            //回溯后当前节点获胜局数
+    double q;                         //回溯后当前节点获胜局数
     int n;                            //该节点被访问次数
     double score;                     //UCT算法中的得分
     int *countPtr;                    //指向总探索次数
@@ -60,7 +60,7 @@ public:
         //选取分数最高的子节点进行探索
 
         for (int i = 0; i < childrenCount; i++) {
-            children[i]->score = double(children[i]->q) / double(children[i]->n) + 1.414 * sqrt(log(double(*countPtr)) / double(children[i]->n)); //计算得分
+            children[i]->score = children[i]->q / double(children[i]->n) + 0.1 * sqrt(log(double(*countPtr)) / double(children[i]->n)); //计算得分
         }
         int bestChild = 0;
         double maxScore = 0;
@@ -74,7 +74,7 @@ public:
     }
 
     //返回由当前节点开始模拟的结果，1代表当前方赢，-1代表当前方输
-    int simulation() {
+    double simulation() {
         int boardS[9][9]; //己方的棋盘
         int boardR[9][9]; //对方的棋盘
         int res[9][9];
@@ -86,33 +86,23 @@ public:
             }
         }
         int round = 0; //偶数代表当前方落子，奇数代表对方落子
-        while (true) {
-            if (round == 16) {
-                break;
-            }
-            int a = round % 2 ? defaultPolicy(boardR) : defaultPolicy(boardS);
-            if (a == -1) {
-                return round % 2 ? 1 : -1;
-            }
-            boardS[a / 9][a % 9] = round % 2 ? -1 : 1;
-            boardR[a / 9][a % 9] = round % 2 ? 1 : -1;
-            round++;
-        }
         int x = getValidPositions(boardS, res);
         int y = getValidPositions(boardR, res);
-        double rate = (tanh(double(x - y) * 0.2) + 1.0) * 0.5;
-        return double(rand()) / double(RAND_MAX) < rate ? 1 : -1;
+        double rate = (tanh(double(x - y) / double(x + y)) + 1.0) * 0.5;
+        return rate;
     }
 
     //沿树逆行，反向传播结果信息
     //delta:结果，1是当前方赢，0是当前方输
-    void backup(int delta) {
+    void backup(double delta) {
         treeNode *node = this;
         int d = 0;
         while (node != nullptr) {
-            if (delta == d % 2) //q值是隔层传播的
+            if (1 == d % 2) //q值是隔层传播的
             {
-                node->q++;
+                node->q += delta;
+            } else {
+                node->q += (1.0 - delta);
             }
             node->n++;
             node = node->parent;
