@@ -107,7 +107,7 @@ public:
             {
                 node->q += delta;
             } else {
-                node->q += (1.0 - delta);
+                node->q -= delta;
             }
             node->n++;
             node = node->parent;

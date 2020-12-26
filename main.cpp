@@ -69,7 +69,7 @@ int main() {
     action["y"] = bestAction[0];
     ret["response"] = action;
     char buffer[4096];
-    sprintf(buffer, "MCTS节点数:%d,当前预估胜率:%.3f", count, ((double)(root.children[maxI]->q)) / ((double)root.children[maxI]->n) + 1) * 0.5;
+    sprintf(buffer, "MCTS节点数:%d,当前预估胜率:%.3f", count, (((double)(root.children[maxI]->q)) / ((double)root.children[maxI]->n) + 1.0) * 0.5);
     ret["debug"] = buffer;
     Json::FastWriter writer;
     cout << writer.write(ret) << endl;
