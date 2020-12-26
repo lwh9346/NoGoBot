@@ -75,18 +75,14 @@ public:
 
     //返回由当前节点开始模拟的结果，1代表当前方赢，-1代表当前方输
     double simulation() {
-        int boardS[9][9]; //己方的棋盘
         int boardR[9][9]; //对方的棋盘
         int res[9][9];
-        //拷贝一份棋盘
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                boardS[i][j] = board[i][j];
                 boardR[i][j] = -board[i][j];
             }
         }
-        int round = 0; //偶数代表当前方落子，奇数代表对方落子
-        int x = getValidPositions(boardS, res);
+        int x = getValidPositions(board, res);
         int y = getValidPositions(boardR, res);
         double rate = (tanh(double(x - y) / double(x + y)) + 1.0) * 0.5;
         return rate;
