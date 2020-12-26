@@ -1,5 +1,6 @@
 import random
 
+CodeObfuscationOn = False
 
 def getParts(line: str):
     # 假定没有英文-数字混合类型的名称
@@ -106,6 +107,9 @@ aio.write("using namespace std;\n")
 for codeParts in codeLineParts:
     temp = ""
     for p in codeParts:
+        if not CodeObfuscationOn:
+            temp += p
+            continue
         if not codeNames.__contains__(p):
             temp += p
             continue
