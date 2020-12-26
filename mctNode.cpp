@@ -59,6 +59,9 @@ public:
         //完全探索的节点
         //选取分数最高的子节点进行探索
 
+        for (int i = 0; i < childrenCount; i++) {
+            children[i]->score = double(children[i]->q) / double(children[i]->n) + 1.414 * sqrt(log(double(*countPtr)) / double(children[i]->n)); //计算得分
+        }
         int bestChild = 0;
         double maxScore = 0;
         for (int i = 0; i < childrenCount; i++) {
@@ -112,7 +115,6 @@ public:
                 node->q++;
             }
             node->n++;
-            node->score = double(node->q) / double(node->n) + 1.414 * sqrt(log(double(*countPtr)) / double(node->n)); //得分公式
             node = node->parent;
             d++;
         }
@@ -255,20 +257,14 @@ private:
             }
             positionMark[i] = tmp;
         }
-        for (int i = 0; (i < 4) && (i < n); i++) {
-            int temp = positionMark[i];
-            int tempI = i;
-            for (int j = i; j < validPositionCount; j++) {
-                if (temp < positionMark[j]) {
-                    temp = positionMark[j];
-                    tempI = j;
-                }
+        int maxMark = positionMark[0];
+        int maxI = 0;
+        for (int i = 1; i < n; i++) {
+            if (positionMark[i] > maxMark) {
+                maxMark = positionMark[i];
+                maxI = i;
             }
-            swap(positionMark[i], positionMark[tempI]);
-            swap(validPositions[i], validPositions[tempI]);
         }
-
-        int maxI = rand() % min(n, 4);
 
         return validPositions[maxI];
     }
