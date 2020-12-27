@@ -1,6 +1,6 @@
 class gameRule {
 public:
-    //ValidPositionResult 是获取可落子位置的返回结果，应传入一个指针给该函数以便该函数将数据写回
+    //ValidPositionResult是获取可落子位置的返回结果，应传入一个指针给该函数以便该函数将数据写回
     struct ValidPositionResult {
         int numS;      //己方可落子数
         int numR;      //对方可落子数
@@ -31,7 +31,7 @@ private:
     };
 
 public:
-    //GetValidPosition 调用前要新建一个返回值结构体并将指针传进来
+    //GetValidPosition调用前要新建一个返回值结构体并将指针传进来
     static void GetValidPosition(signed char board[81], ValidPositionResult *res) {
         //变量初始化
         signed char groupMark[81];
@@ -79,7 +79,6 @@ public:
             for (int j = 0; j < groups[i].posCount; j++) { //标记气
                 int pos = groups[i].pos[j];
                 int x = pos / 9, y = pos % 9;
-                int t = board[pos];
                 int up = pos - 9;
                 int down = pos + 9;
                 int left = pos - 1;
@@ -134,7 +133,6 @@ public:
         //获取最终结果
         for (int pos = 0; pos < 81; pos++) {
             int x = pos / 9, y = pos % 9;
-            int t = board[pos];
             int up = pos - 9;
             int down = pos + 9;
             int left = pos - 1;

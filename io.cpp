@@ -11,15 +11,10 @@ using namespace std;
 int main() {
     //计数器与棋盘声明，随机数初始化
     signed char board[81] = {0};
-    srand(clock());
 
     //读入JSON
     string str;
     getline(cin, str);
-
-    //计时开始并计算时限
-    int start = clock();
-    int timeout = (int)(0.95 * (double)CLOCKS_PER_SEC);
 
     //解析JSON
     Json::Reader reader;
