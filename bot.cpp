@@ -1,4 +1,4 @@
-#include "./gameRule.cpp"
+#include <gameRule.cpp>
 #include <cmath>
 #include <ctime>
 using namespace std;
