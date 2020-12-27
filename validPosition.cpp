@@ -118,17 +118,16 @@ int getValidPositions(int board[9][9], int result[9][9]) {
                 r++;
                 continue;
             }
-            if (positionState[i][j] / 2 % 2 == 1) //己方唯一气，不能下
-            {
-                if ((i != 0 && board[i - 1][j] == 0) || (j != 0 && board[i][j - 1] == 0) || (i != 8 && board[i + 1][j] == 0) || (j != 8 && board[i][j + 1] == 0)) {
+            if (positionState[i][j] / 2 % 2 == 1) {
+                if ((i != 0 && board[i - 1][j] == 0) || (j != 0 && board[i][j - 1] == 0) || (i != 8 && board[i + 1][j] == 0) || (j != 8 && board[i][j + 1] == 0)) { //己方唯一气但是边上还有气
                     result[i][j] = 1;
                     r++;
-                } else {
+                } else { //己方唯一气，不能下
                     result[i][j] = 0;
                 }
                 continue;
             }
-            if ((i == 0 || board[i - 1][j] == -1) && (j == 0 || board[i][j - 1] == -1) && (i == 8 || board[i + 1][j] == -1) && (j == 8 || board[i][j + 1] == -1)) {
+            if ((i == 0 || board[i - 1][j] == -1) && (j == 0 || board[i][j - 1] == -1) && (i == 8 || board[i + 1][j] == -1) && (j == 8 || board[i][j + 1] == -1)) { //边上全是对方的子
                 result[i][j] = 0;
                 continue; //防自杀
             }
