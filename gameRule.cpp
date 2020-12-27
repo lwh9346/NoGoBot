@@ -69,8 +69,8 @@ public:
             if (groupMark[i] == -1) {
                 continue;
             }
-            groups[i].pos[groups[i].posCount] = i;
-            groups[i].posCount++;
+            groups[groupMark[i]].pos[groups[groupMark[i]].posCount] = i;
+            groups[groupMark[i]].posCount++;
         }
 
         //找气
