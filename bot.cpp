@@ -83,7 +83,7 @@ private:
                 maxI = i;
             }
         }
-        return t->children[maxI];
+        return treePolicy(t->children[maxI]);
     }
 
     static double defaultPolicy(TreeNode *t) {
