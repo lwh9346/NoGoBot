@@ -1,4 +1,4 @@
-#include <gameRule.cpp>
+#include "gameRule.cpp"
 #include <cmath>
 #include <ctime>
 using namespace std;
@@ -121,11 +121,16 @@ private:
     }
 
 public:
+    struct DebugData {
+        double winningRate;
+        int nodeCount;
+    };
+
     //输入的棋盘不需要正反方反转，但是需要xy反转
     //+1是己方，0是空格，-1是对方
     //时限单位为秒，超过时限后才会停止
     //返回值为x*9+y
-    static int GetBestAction(signed char board[81], double timeOut) {
+    static int GetBestAction(signed char board[81], double timeOut, DebugData *debug) {
         int totalN = 0;
         int end = (int)(timeOut * double(CLOCKS_PER_SEC)) + clock();
         TreeNode *root = createRootTreeNode(board, &totalN);
@@ -147,6 +152,8 @@ public:
             }
         }
         int bestAction = root->childrenAction[maxI];
+        debug->nodeCount = totalN;
+        debug->winningRate = (root->children[maxI]->q / double(root->children[maxI]->n) + 1) * 0.5;
         deleteTree(root);
         return bestAction;
     }

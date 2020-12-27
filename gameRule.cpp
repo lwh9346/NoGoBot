@@ -30,9 +30,6 @@ private:
         bool notOnlyGasR;     //对方非唯一气
     };
 
-private:
-    static void grouping(int pos, int groupID, signed char board[81], signed char groupMark[81]);
-
 public:
     //GetValidPosition 调用前要新建一个返回值结构体并将指针传进来
     static void GetValidPosition(signed char board[81], ValidPositionResult *res) {
@@ -102,7 +99,7 @@ public:
             }
             int gasPos[81];
             int gasCount = 0;
-            for (int j = 0; j < 81; i++) { //气数统计
+            for (int j = 0; j < 81; j++) { //气数统计
                 if (groups[i].gasPos[j] == 1) {
                     gasPos[gasCount] = j;
                     gasCount++;
