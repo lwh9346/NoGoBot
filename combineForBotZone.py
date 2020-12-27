@@ -65,7 +65,7 @@ includes = set()
 defines = set()
 codeLineParts = []
 codeNames = set()
-filenames = ["./validPosition.cpp", "./mctNode.cpp", "./main.cpp"]
+filenames = ["gameRule.cpp", "bot.cpp", "io.cpp"]
 for filename in filenames:
     f = open(filename, encoding="utf-8")
     for i, l in enumerate(f):
