@@ -121,14 +121,20 @@ private:
     }
 
 public:
+    //调试数据
+    //在函数外声明后传指针给函数即可获取调试数据
     struct DebugData {
-        double winningRate;
-        int nodeCount;
+        double winningRate; //胜率（不准确）
+        int nodeCount;      //mcts搜索的节点数
     };
 
-    //输入的棋盘不需要正反方反转，但是需要xy反转
+    //获取当前棋盘下的最佳行动
+    //输入的棋盘不需要正反方反转，但是需要xy反转(不然调试的时候很难受)
     //+1是己方，0是空格，-1是对方
     //时限单位为秒，超过时限后才会停止
+    //debug是调试信息，在外部新建一个对象后传指针进来即可
+    //如果不需要调试信息的话，可以传nullptr进来
+    //该函数执行完毕后会自动释放内存
     //返回值为x*9+y
     static int GetBestAction(signed char board[81], double timeOut, DebugData *debug) {
         int totalN = 0;
@@ -152,8 +158,10 @@ public:
             }
         }
         int bestAction = root->childrenAction[maxI];
-        debug->nodeCount = totalN;
-        debug->winningRate = (root->children[maxI]->q / double(root->children[maxI]->n) + 1) * 0.5;
+        if (debug != nullptr) {
+            debug->nodeCount = totalN;
+            debug->winningRate = (root->children[maxI]->q / double(root->children[maxI]->n) + 1) * 0.5;
+        }
         deleteTree(root);
         return bestAction;
     }
