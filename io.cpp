@@ -31,7 +31,9 @@ int main() {
             board[x * 9 + y] = 1;
     }
     x = input["requests"][turnID]["y"].asInt(), y = input["requests"][turnID]["x"].asInt();
-    board[x * 9 + y] = -1;
+    if (x != -1) {
+        board[x * 9 + y] = -1;
+    }
 
     //MCTS
     mcts::DebugData debug;
