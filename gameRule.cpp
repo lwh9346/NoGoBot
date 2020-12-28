@@ -213,7 +213,7 @@ private:
         int left = pos - 1;
         int right = pos + 1;
         if (x != 0 && groupMark[up] == -1 && t == board[up]) {
-            grouping(left, groupID, board, groupMark);
+            grouping(up, groupID, board, groupMark);
         }
         if (x != 8 && groupMark[down] == -1 && t == board[down]) {
             grouping(down, groupID, board, groupMark);
