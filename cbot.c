@@ -329,12 +329,12 @@ void backup(double delta, struct TreeNode *t) {
 void deleteTree(struct TreeNode *t) {
     for (int i = 0; i < t->childrenCount; i++) {
         if (t->children[i]->childrenCount == 0) {
-            delete (t->children[i]);
+            free(t->children[i]);
         } else {
             deleteTree(t->children[i]);
         }
     }
-    delete (t);
+    free(t);
 }
 struct DebugData {
     double winningRate; //胜率（不准确）
