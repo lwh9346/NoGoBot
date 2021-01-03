@@ -238,7 +238,6 @@ struct TreeNode {
     int childrenCountMax;
     double q; //位于+-n之间的实数
     int n;
-    int *totalN;
     struct ValidPositionResult res;
 };
 //新建树节点
@@ -248,7 +247,6 @@ struct TreeNode *createNewTreeNode(struct TreeNode *parent, int action) {
     t->n = 0;
     t->parent = parent;
     t->childrenCount = 0;
-    t->totalN = parent->totalN;
     for (int i = 0; i < 81; i++) {
         t->board[i] = -parent->board[i];
     }
@@ -266,13 +264,12 @@ struct TreeNode *createNewTreeNode(struct TreeNode *parent, int action) {
 //创建根节点
 //棋盘不需要反转
 //totalN是计数器
-struct TreeNode *createRootTreeNode(signed char board[81], int *totalN) {
+struct TreeNode *createRootTreeNode(signed char board[81]) {
     struct TreeNode *t = malloc(sizeof(struct TreeNode));
     t->q = 0.0;
     t->n = 0;
     t->parent = NULL;
     t->childrenCount = 0;
-    t->totalN = totalN;
     for (int i = 0; i < 81; i++) {
         t->board[i] = board[i];
     }
@@ -299,7 +296,7 @@ struct TreeNode *treePolicy(struct TreeNode *t) {
     double maxScore = -1.0;
     int maxI = 0;
     for (int i = 0; i < t->childrenCount; i++) {
-        double s = t->children[i]->q / (double)(t->children[i]->n) + 0.2 * sqrt(log((double)(*t->totalN)) / (double)(t->children[i]->n)); //UCT公式
+        double s = t->children[i]->q / (double)(t->children[i]->n) + 0.2 * sqrt(log((double)(t->n)) / (double)(t->children[i]->n)); //UCT公式
         if (s > maxScore) {
             maxScore = s;
             maxI = i;
@@ -353,7 +350,7 @@ struct DebugData {
 int GetBestAction(signed char board[81], double timeOut, struct DebugData *debug) {
     int totalN = 0;
     int end = (int)(timeOut * (double)(CLOCKS_PER_SEC)) + clock();
-    struct TreeNode *root = createRootTreeNode(board, &totalN);
+    struct TreeNode *root = createRootTreeNode(board);
     while (clock() < end) {
         //为了减少获取时间的性能开销，执行16步以后再获取时间
         for (int i = 0; i < 16; i++) {
