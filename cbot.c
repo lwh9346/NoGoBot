@@ -1,3 +1,5 @@
+#cgo LDFLAGS: -lm
+#pragma GCC optimize(3)
 #include <malloc.h>
 #include <math.h>
 #include <time.h>
