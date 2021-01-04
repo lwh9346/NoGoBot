@@ -343,23 +343,19 @@ struct DebugData {
 //获取当前棋盘下的最佳行动
 //输入的棋盘不需要正反方反转，但是需要xy反转(不然调试的时候很难受)
 //+1是己方，0是空格，-1是对方
-//时限单位为秒，超过时限后才会停止
+//应输入最大步数
 //debug是调试信息，在外部新建一个对象后传指针进来即可
 //如果不需要调试信息的话，可以传nullptr进来
 //该函数执行完毕后会自动释放内存
 //返回值为x*9+y
-int GetBestAction(signed char board[81], double timeOut, struct DebugData *debug) {
+int GetBestAction(signed char board[81], int maxSteps, struct DebugData *debug) {
     int totalN = 0;
-    int end = (int)(timeOut * (double)(CLOCKS_PER_SEC)) + clock();
     struct TreeNode *root = createRootTreeNode(board);
-    while (clock() < end) {
-        //为了减少获取时间的性能开销，执行16步以后再获取时间
-        for (int i = 0; i < 16; i++) {
-            totalN++;
-            struct TreeNode *t = treePolicy(root);
-            double delta = defaultPolicy(t);
-            backup(delta, t);
-        }
+    while (totalN < maxSteps) {
+        totalN++;
+        struct TreeNode *t = treePolicy(root);
+        double delta = defaultPolicy(t);
+        backup(delta, t);
     }
     int maxN = root->children[0]->n;
     int maxI = 0;
