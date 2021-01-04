@@ -284,7 +284,7 @@ struct TreeNode *createRootTreeNode(signed char board[81]) {
     return t;
 }
 struct TreeNode *treePolicy(struct TreeNode *t) {
-    if (t->childrenCountMax == 0) {
+    if (t->res.numR == 0 || t->res.numS == 0) {
         return t;
     }
     if (t->childrenCount < t->childrenCountMax) {

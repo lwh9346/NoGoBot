@@ -62,7 +62,7 @@ private:
     }
 
     static TreeNode *treePolicy(TreeNode *t) {
-        if (t->childrenCountMax == 0) {
+        if (t->res.numR == 0 || t->res.numS == 0) {
             return t;
         }
         if (t->childrenCount < t->childrenCountMax) {
@@ -85,9 +85,6 @@ private:
     }
 
     static double defaultPolicy(TreeNode *t) {
-        if (t->res.numR + t->res.numS == 0) {
-            return 0.0;
-        }
         if (t->res.numR == 0) {
             return 1.0;
         }
