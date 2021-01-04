@@ -295,8 +295,9 @@ struct TreeNode *treePolicy(struct TreeNode *t) {
     }
     double maxScore = -1.0;
     int maxI = 0;
+    double logN = log2(t->n);
     for (int i = 0; i < t->childrenCount; i++) {
-        double s = t->children[i]->q / (double)(t->children[i]->n) + 0.2 * sqrt(log((double)(t->n)) / (double)(t->children[i]->n)); //UCT公式
+        double s = t->children[i]->q / (double)(t->children[i]->n) + 0.2 * sqrt(logN / (double)(t->children[i]->n)); //UCT公式
         if (s > maxScore) {
             maxScore = s;
             maxI = i;

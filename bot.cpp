@@ -73,8 +73,9 @@ private:
         }
         double maxScore = -1.0;
         int maxI = 0;
+        double logN = log2(t->n); //这里编译器优化失效了，这个常量没有被提取出来，所以我手动提取它
         for (int i = 0; i < t->childrenCount; i++) {
-            double s = t->children[i]->q / double(t->children[i]->n) + 0.2 * sqrt(log(double(t->n)) / double(t->children[i]->n)); //UCT公式
+            double s = t->children[i]->q / double(t->children[i]->n) + 0.2 * sqrt(logN / double(t->children[i]->n)); //UCT公式
             if (s > maxScore) {
                 maxScore = s;
                 maxI = i;
