@@ -100,6 +100,10 @@ aio = open("./aio.cpp", mode="w", encoding="utf-8")
 aio.write("//你接下来看到的代码是经过了混淆的整活代码\n" if CodeObfuscationOn else "")
 aio.write("//如果你要看真正的源码的话，请访问github\n//https://github.com/lwh9346/NoGoBot\n")
 aio.write("#pragma GCC optimize(3)\n")
+includes = list(includes)
+defines = list(defines)
+includes.sort()
+defines.sort()
 for include in includes:
     aio.write(include)
 for define in defines:
