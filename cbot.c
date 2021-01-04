@@ -306,9 +306,6 @@ struct TreeNode *treePolicy(struct TreeNode *t) {
     return treePolicy(t->children[maxI]);
 }
 double defaultPolicy(struct TreeNode *t) {
-    if (t->res.numR + t->res.numS == 0) {
-        return 0.0;
-    }
     if (t->res.numR == 0) {
         return 1.0;
     }
