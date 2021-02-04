@@ -37,7 +37,7 @@ int main() {
 
     //MCTS
     mcts::DebugData debug;
-    int bestAction = mcts::GetBestAction(board, 0.92, &debug);
+    int bestAction = mcts::GetBestAction(board, 0.95, &debug);
 
     //输出结果与DEBUG信息
     Json::Value ret;

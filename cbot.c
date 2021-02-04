@@ -98,7 +98,7 @@ void GetValidPosition(signed char board[81], struct ValidPositionResult *res) {
 
     //找气
     for (int i = 0; i < groupNum; i++) {
-        groups[i].self = board[groups[i].pos[0]] == 1; //正反双方的判断放在这了
+        groups[i].self = board[(int)groups[i].pos[0]] == 1; //正反双方的判断放在这了
         for (int j = 0; j < groups[i].posCount; j++) { //标记气
             int pos = groups[i].pos[j];
             int x = pos / 9, y = pos % 9;
