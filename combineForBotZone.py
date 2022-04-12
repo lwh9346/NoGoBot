@@ -2,6 +2,7 @@ import random
 
 CodeObfuscationOn = False
 
+
 def getParts(line: str):
     # 假定没有英文-数字混合类型的名称
     strs = []
@@ -16,7 +17,7 @@ def getParts(line: str):
                 "&", "|", "=", ";", "{", "}", ":",
                 "[", "]", ".", ",", "(", ")", "<", ">", "!", "?",
                 "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    keyWords = ['asm', 'else', 'new', 'this', 'auto', 'enum',
+    keyWords = ['asm', 'else', 'new', 'this', 'auto', 'enum', 'malloc', 'free',
                 'operator', 'throw', 'bool', 'explicit', 'private', 'true',
                 'break', 'export', 'protected', 'try', 'case', 'extern',
                 'public', 'typedef', 'catch', 'false', 'register', 'typeid',
