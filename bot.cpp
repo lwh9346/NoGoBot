@@ -107,7 +107,7 @@ private:
         if (t->res.numS == 0) {
             return -1.0;
         }
-        return tanh(double(t->res.numS - t->res.numR) / double(t->res.numR + t->res.numS));
+        return double(t->res.numS - t->res.numR) / double(t->res.numR + t->res.numS);
     }
 
     static void backup(double delta, TreeNode *t) {
