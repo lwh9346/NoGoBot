@@ -3,6 +3,9 @@
 #include <ctime>
 using namespace std;
 
+void *memPool;
+int nodeUsed;
+
 class mcts {
 private:
     struct TreeNode {
@@ -17,9 +20,22 @@ private:
         gameRule::ValidPositionResult res;
     };
 
+    //预分配内存
+    static void mallocMemoryForTreeNodes(int nodeCount) {
+        nodeUsed = 0;
+        memPool = malloc(nodeCount * sizeof(TreeNode));
+    }
+
+    //代替new
+    static TreeNode *getMemoryForTreeNodes() {
+        TreeNode *t = (TreeNode *)memPool + nodeUsed;
+        nodeUsed++;
+        return t;
+    }
+
     //action是上一把的家伙下的棋
     static TreeNode *createNewTreeNode(TreeNode *parent, int action) {
-        TreeNode *t = new TreeNode;
+        TreeNode *t = getMemoryForTreeNodes();
         t->q = 0.0;
         t->n = 0;
         t->parent = parent;
@@ -42,7 +58,7 @@ private:
     //棋盘不需要反转
     //totalN是计数器
     static TreeNode *createRootTreeNode(signed char board[81]) {
-        TreeNode *t = new TreeNode;
+        TreeNode *t = getMemoryForTreeNodes();
         t->q = 0.0;
         t->n = 0;
         t->parent = nullptr;
@@ -105,14 +121,7 @@ private:
     }
 
     static void deleteTree(TreeNode *t) {
-        for (int i = 0; i < t->childrenCount; i++) {
-            if (t->children[i]->childrenCount == 0) {
-                delete (t->children[i]);
-            } else {
-                deleteTree(t->children[i]);
-            }
-        }
-        delete (t);
+        free(memPool);
     }
 
 public:
@@ -121,6 +130,7 @@ public:
     struct DebugData {
         double winningRate; //胜率（不准确）
         int nodeCount;      //mcts搜索的节点数
+        int searchCount;    //搜索次数
     };
 
     //获取当前棋盘下的最佳行动
@@ -132,6 +142,7 @@ public:
     //该函数执行完毕后会自动释放内存
     //返回值为x*9+y
     static int GetBestAction(signed char board[81], double timeOut, DebugData *debug) {
+        mallocMemoryForTreeNodes((int)(400000.0 * timeOut));
         int totalN = 0;
         int end = (int)(timeOut * double(CLOCKS_PER_SEC)) + clock();
         TreeNode *root = createRootTreeNode(board);
@@ -154,7 +165,8 @@ public:
         }
         int bestAction = root->childrenAction[maxI];
         if (debug != nullptr) {
-            debug->nodeCount = totalN;
+            debug->nodeCount = nodeUsed;
+            debug->searchCount = totalN;
             debug->winningRate = (root->children[maxI]->q / double(root->children[maxI]->n) + 1) * 0.5;
         }
         deleteTree(root);
