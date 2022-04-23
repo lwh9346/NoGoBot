@@ -17,6 +17,7 @@ private:
         int childrenCountMax;
         double q; //位于+-n之间的实数
         int n;
+        int depth;
         gameRule::ValidPositionResult res;
     };
 
@@ -40,6 +41,7 @@ private:
         t->n = 0;
         t->parent = parent;
         t->childrenCount = 0;
+        t->depth = parent->depth + 1;
         for (int i = 0; i < 81; i++) {
             t->board[i] = -parent->board[i];
         }
@@ -63,6 +65,7 @@ private:
         t->n = 0;
         t->parent = nullptr;
         t->childrenCount = 0;
+        t->depth = 0;
         for (int i = 0; i < 81; i++) {
             t->board[i] = board[i];
         }
@@ -101,13 +104,16 @@ private:
     }
 
     static double defaultPolicy(TreeNode *t) {
-        if (t->res.numR == 0) {
-            return 1.0;
-        }
         if (t->res.numS == 0) {
             return -1.0;
         }
-        return double(t->res.numS - t->res.numR) / double(t->res.numR + t->res.numS);
+        if (t->res.numR == 0) {
+            return 1.0;
+        }
+        if (t->res.numR < 3 || t->res.numS < 3) {
+            return 0.;
+        }
+        return double(t->res.numS - t->res.numR) * 0.05 * (1. + double(min(t->depth, 3)) * 0.2);
     }
 
     static void backup(double delta, TreeNode *t) {
