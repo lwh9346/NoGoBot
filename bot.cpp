@@ -1,6 +1,7 @@
 #include "gameRule.cpp"
 #include <cmath>
 #include <ctime>
+#include <algorithm>
 using namespace std;
 
 void *memPool;
